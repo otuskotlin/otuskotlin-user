@@ -1,5 +1,5 @@
-rootProject.name = "otuskotlin-202007-user"
-include("otuskotlin-202007-users-common")
+rootProject.name = "otuskotlin-202007-USER"
+include("users-common")
 
 pluginManagement {
     plugins {

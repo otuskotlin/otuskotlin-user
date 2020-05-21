@@ -22,7 +22,6 @@ kotlin {
                 implementation(kotlin("test-annotations-common"))
             }
         }
-
     }
 
     jvm() {
@@ -60,7 +59,6 @@ kotlin {
     // For Linux, should be changed to e.g. linuxX64
     // For MacOS, should be changed to e.g. macosX64
     // For Windows, should be changed to e.g. mingwX64
-/*
     linuxX64("linux") {
         binaries {
             sharedLib {
@@ -72,5 +70,4 @@ kotlin {
         compilations["test"].defaultSourceSet {
         }
     }
-*/
 }
