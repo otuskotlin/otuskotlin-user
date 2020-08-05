@@ -13,3 +13,4 @@ pluginManagement {
         kotlin("plugin.serialization") version kotlinVersion apply false
     }
 }
+include("ok-user-transport-multiplatform-be")

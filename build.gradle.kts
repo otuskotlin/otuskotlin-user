@@ -1,5 +1,7 @@
 plugins {
-//    kotlin("jvm") version "1.3.72"
+    kotlin("jvm") apply false
+    kotlin("multiplatform") apply false
+    kotlin("plugin.serialization") apply false
 }
 
 group = "ru.otus.otuskotlin.user"

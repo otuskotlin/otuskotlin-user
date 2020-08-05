@@ -9,7 +9,8 @@ data class UserModel(
         var lname: String = "",
         var dob: LocalDate = LocalDate.MIN,
         var email: String = "",
-        var phone: String = ""
+        var phone: String = "",
+        var permissions: MutableSet<UserPermissionsModel> = mutableSetOf()
 ) {
     companion object {
         val NONE = UserModel()

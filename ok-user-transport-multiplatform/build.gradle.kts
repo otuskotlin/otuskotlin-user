@@ -1,6 +1,6 @@
 plugins {
     kotlin("multiplatform")
-//    kotlin("plugin.serialization")
+    kotlin("plugin.serialization")
 }
 
 group = rootProject.group
