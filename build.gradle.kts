@@ -5,7 +5,10 @@ plugins {
 group = "ru.otus.otuskotlin.user"
 version = "0.0.1"
 
-repositories {
-    mavenCentral()
+allprojects {
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
 }
 
