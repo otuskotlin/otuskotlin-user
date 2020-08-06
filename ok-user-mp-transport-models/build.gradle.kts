@@ -2,8 +2,8 @@ plugins {
     kotlin("multiplatform") version "1.3.72"
 }
 
-group = "ru.otus.otuskotlin.user"
-version = "0.0.1"
+group = rootProject.group
+version = rootProject.version
 
 repositories {
     mavenCentral()

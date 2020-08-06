@@ -1,6 +1,6 @@
 rootProject.name = "otuskotlin-user"
 include("ok-user-be-common")
-include("ok-user-transport-multiplatform")
+include("ok-user-mp-transport-models")
 
 pluginManagement {
     plugins {
