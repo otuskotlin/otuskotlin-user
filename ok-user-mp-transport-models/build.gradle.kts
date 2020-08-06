@@ -55,13 +55,11 @@ kotlin {
             dependencies {
                 implementation(kotlin("stdlib-jdk8"))
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime:$serializationVersion")
-                implementation(project(":ok-user-common"))
-                implementation(project(":ok-user-transport-common"))
             }
         }
         val jvmTest by getting {
             dependencies {
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
+//                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
                 implementation(kotlin("test"))
                 implementation(kotlin("test-junit"))
             }
@@ -70,6 +68,7 @@ kotlin {
         val linuxX64Main by getting {
             dependencies {
                 implementation(kotlin("stdlib"))
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime-native:$serializationVersion")
             }
         }
         val linuxX64Test by getting {

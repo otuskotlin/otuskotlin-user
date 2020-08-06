@@ -6,5 +6,5 @@ import kotlinx.serialization.Transient
 @Serializable
 open class KmpUserResponse(
         @Transient open val status: KmpUserResultStatuses? = null,
-        @Transient open val errors: List<ResponseError>? = null
+        @Transient open val errors: List<KmpUserError>? = null
 )
