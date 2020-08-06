@@ -18,6 +18,7 @@ kotlin {
         nodejs()
     }
     jvm()
+    linuxX64()
 
     sourceSets {
         val commonMain by getting {
@@ -53,6 +54,17 @@ kotlin {
             dependencies {
                 implementation(kotlin("test"))
                 implementation(kotlin("test-junit"))
+            }
+        }
+
+        val linuxX64Main by getting {
+            dependencies {
+                implementation(kotlin("stdlib"))
+            }
+        }
+        val linuxX64Test by getting {
+            dependencies {
+                implementation(kotlin("test"))
             }
         }
     }
