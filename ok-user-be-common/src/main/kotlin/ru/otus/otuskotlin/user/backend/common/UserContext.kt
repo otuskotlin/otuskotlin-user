@@ -1,6 +1,6 @@
-package ru.otus.otuskotlin.user.common
+package ru.otus.otuskotlin.user.backend.common
 
-import ru.otus.otuskotlin.user.common.models.UserModel
+import ru.otus.otuskotlin.user.backend.common.models.UserModel
 
 data class UserContext(
         var queryUserId: String = "",
