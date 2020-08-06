@@ -19,6 +19,7 @@ kotlin {
         nodejs()
     }
     jvm()
+    linuxX64()
 
     sourceSets {
         val serializationVersion: String by project
@@ -63,6 +64,17 @@ kotlin {
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
                 implementation(kotlin("test"))
                 implementation(kotlin("test-junit"))
+            }
+        }
+
+        val linuxX64Main by getting {
+            dependencies {
+                implementation(kotlin("stdlib"))
+            }
+        }
+        val linuxX64Test by getting {
+            dependencies {
+                implementation(kotlin("test"))
             }
         }
     }
