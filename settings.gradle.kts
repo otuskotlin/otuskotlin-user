@@ -1,4 +1,6 @@
 rootProject.name = "otuskotlin-user"
+
+include("ok-user-mp-common")
 include("ok-user-be-common")
 include("ok-user-mp-transport-models")
 

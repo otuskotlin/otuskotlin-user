@@ -1,5 +1,6 @@
 package ru.otus.otuskotlin.common.validators
 
+import ru.otus.otuskotlin.common.validators.simple.ValidatorStringRegex
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue

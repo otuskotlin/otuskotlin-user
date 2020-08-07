@@ -1,5 +1,6 @@
 package ru.otus.otuskotlin.user.transport.multiplatform.validators
 
+import ru.otus.otuskotlin.common.validators.fields.ValidatorId
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue

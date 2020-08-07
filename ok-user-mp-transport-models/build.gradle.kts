@@ -1,6 +1,6 @@
 plugins {
     kotlin("multiplatform")
-//    kotlin("plugin.serialization")
+    kotlin("plugin.serialization")
 }
 
 group = rootProject.group
@@ -30,7 +30,7 @@ kotlin {
                 implementation(kotlin("stdlib-common"))
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime-common:$serializationVersion")
 
-                implementation(project(":ok-common"))
+                implementation(project(":ok-user-mp-common"))
             }
         }
         val commonTest by getting {

@@ -1,4 +1,8 @@
-package ru.otus.otuskotlin.common.validators
+package ru.otus.otuskotlin.common.validators.simple
+
+import ru.otus.otuskotlin.common.validators.HandleError
+import ru.otus.otuskotlin.common.validators.IValidator
+import ru.otus.otuskotlin.common.validators.ValidationResult
 
 class ValidatorStringRegex(
         private val regex: Regex,

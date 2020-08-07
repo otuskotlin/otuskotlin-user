@@ -2,8 +2,8 @@ plugins {
     kotlin("multiplatform")
 }
 
-group = "ru.otus.otuskotlin.user"
-version = "0.0.1"
+group = rootProject.group
+version = rootProject.version
 
 repositories {
     mavenCentral()
@@ -18,6 +18,7 @@ kotlin {
         nodejs()
     }
     jvm()
+    linuxX64()
 
     sourceSets {
         val commonMain by getting {

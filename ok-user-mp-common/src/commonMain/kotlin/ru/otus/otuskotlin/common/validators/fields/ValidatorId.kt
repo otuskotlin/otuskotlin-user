@@ -1,13 +1,13 @@
-package ru.otus.otuskotlin.user.transport.multiplatform.validators
+package ru.otus.otuskotlin.common.validators.fields
 
 import ru.otus.otuskotlin.common.validators.IValidator
 import ru.otus.otuskotlin.common.validators.ValidationResult
-import ru.otus.otuskotlin.common.validators.ValidatorStringBlank
-import ru.otus.otuskotlin.common.validators.ValidatorStringRegex
+import ru.otus.otuskotlin.common.validators.simple.ValidatorStringBlank
+import ru.otus.otuskotlin.common.validators.simple.ValidatorStringRegex
 
 class ValidatorId(
         val field: String = ""
-): IValidator<String> {
+): IValidator<String?> {
     private val validatorEmpty = ValidatorStringBlank(field = field)
     private val validatorRegex = ValidatorStringRegex(
             regex = Regex("""[0-9a-zA-Z-]+"""),
@@ -16,8 +16,8 @@ class ValidatorId(
             field = field,
             message = ""
     )
-    override fun validate(arg: String): ValidationResult = ValidationResult(
+    override fun validate(arg: String?): ValidationResult = ValidationResult(
             *validatorEmpty.validate(arg).errors.toTypedArray(),
-            *validatorRegex.validate(arg).errors.toTypedArray()
+            *(arg?.let { validatorRegex.validate(it).errors.toTypedArray() } ?: emptyArray())
     )
 }
