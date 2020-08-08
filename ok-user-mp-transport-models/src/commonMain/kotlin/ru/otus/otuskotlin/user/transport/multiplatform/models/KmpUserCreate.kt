@@ -12,7 +12,6 @@ class KmpUserCreate(
         override var phone: String? = null,
         var debug: Debug? = null
 ) : KmpUserSave(
-        id = null,
         fname = fname,
         mname = mname,
         lname = lname,
