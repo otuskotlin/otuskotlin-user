@@ -27,6 +27,12 @@ fun UserContext.resultItem(): KmpUserResponseItem = KmpUserResponseItem(
         status = KmpUserResultStatuses.SUCCESS
 )
 
+fun UserContext.resultIndex(): KmpUserResponseIndex = KmpUserResponseIndex(
+        data = listOf(responseUser.kmp()),
+//        errors = errors.kmp()
+        status = KmpUserResultStatuses.SUCCESS
+)
+
 fun KmpUserSave.model() = UserModel(
         id = if (this is KmpUserUpdate) (id ?: "") else "",
         fname = fname.modelToString(),

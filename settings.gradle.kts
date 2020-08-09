@@ -15,3 +15,4 @@ include("ok-user-mp-transport-models")
 
 include("ok-user-be-common")
 include("ok-user-be-transport-multiplatform")
+include("ok-user-be-app-jetty")
