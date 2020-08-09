@@ -1,4 +1,4 @@
-package ru.otus.otuskotlin.user.common.models
+package ru.otus.otuskotlin.user.backend.common.models
 
 enum class UserPermissionsModel {
     VIEW,

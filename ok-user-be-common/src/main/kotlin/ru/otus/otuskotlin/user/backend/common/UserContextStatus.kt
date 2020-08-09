@@ -1,4 +1,4 @@
-package ru.otus.otuskotlin.user.common
+package ru.otus.otuskotlin.user.backend.common
 
 enum class UserContextStatus {
     NONE,
