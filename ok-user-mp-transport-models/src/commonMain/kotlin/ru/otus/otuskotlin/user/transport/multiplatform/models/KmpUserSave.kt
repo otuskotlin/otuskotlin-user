@@ -5,7 +5,6 @@ import kotlinx.serialization.Transient
 
 @Serializable
 abstract class KmpUserSave(
-        @Transient open var id: String? = null,
         @Transient open var fname: String? = null,
         @Transient open var mname: String? = null,
         @Transient open var lname: String? = null,

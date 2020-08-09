@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 class KmpUserUpdate(
-        override var id: String? = null,
+        var id: String? = null,
         override var fname: String? = null,
         override var mname: String? = null,
         override var lname: String? = null,
@@ -13,7 +13,6 @@ class KmpUserUpdate(
         override var phone: String? = null,
         var debug: Debug? = null
 ) : KmpUserSave(
-        id = id,
         fname = fname,
         mname = mname,
         lname = lname,
