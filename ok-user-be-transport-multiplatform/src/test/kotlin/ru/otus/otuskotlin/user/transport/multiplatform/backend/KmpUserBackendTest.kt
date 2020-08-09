@@ -1,8 +1,8 @@
 package ru.otus.otuskotlin.user.transport.multiplatform.backend
 
 import kotlinx.coroutines.runBlocking
-import ru.otus.otuskotlin.user.common.UserContext
-import ru.otus.otuskotlin.user.common.models.UserModel
+import ru.otus.otuskotlin.user.backend.common.UserContext
+import ru.otus.otuskotlin.user.backend.common.models.UserModel
 import ru.otus.otuskotlin.user.transport.multiplatform.models.*
 import kotlin.test.Test
 import kotlin.test.assertEquals

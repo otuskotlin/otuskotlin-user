@@ -1,9 +1,5 @@
 rootProject.name = "otuskotlin-user"
 
-include("ok-user-mp-common")
-include("ok-user-be-common")
-include("ok-user-mp-transport-models")
-
 pluginManagement {
     plugins {
         val kotlinVersion: String by settings
@@ -13,4 +9,9 @@ pluginManagement {
         kotlin("plugin.serialization") version kotlinVersion apply false
     }
 }
-include("ok-user-transport-multiplatform-be")
+
+include("ok-user-mp-common")
+include("ok-user-mp-transport-models")
+
+include("ok-user-be-common")
+include("ok-user-be-transport-multiplatform")

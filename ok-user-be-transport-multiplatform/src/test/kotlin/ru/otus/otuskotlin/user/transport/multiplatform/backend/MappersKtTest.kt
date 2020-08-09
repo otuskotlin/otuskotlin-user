@@ -1,7 +1,7 @@
 package ru.otus.otuskotlin.user.transport.multiplatform.backend
 
-import ru.otus.otuskotlin.user.common.models.UserModel
-import ru.otus.otuskotlin.user.common.models.UserPermissionsModel
+import ru.otus.otuskotlin.user.backend.common.models.UserModel
+import ru.otus.otuskotlin.user.backend.common.models.UserPermissionsModel
 import ru.otus.otuskotlin.user.transport.multiplatform.models.KmpUserUpdate
 import java.time.LocalDate
 import kotlin.test.Test

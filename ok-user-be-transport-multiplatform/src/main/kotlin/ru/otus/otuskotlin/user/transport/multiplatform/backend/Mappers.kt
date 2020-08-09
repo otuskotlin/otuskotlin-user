@@ -1,7 +1,7 @@
 package ru.otus.otuskotlin.user.transport.multiplatform.backend
 
-import ru.otus.otuskotlin.user.common.UserContext
-import ru.otus.otuskotlin.user.common.models.UserModel
+import ru.otus.otuskotlin.user.backend.common.UserContext
+import ru.otus.otuskotlin.user.backend.common.models.UserModel
 import ru.otus.otuskotlin.user.transport.multiplatform.models.*
 import java.time.LocalDate
 
@@ -28,7 +28,7 @@ fun UserContext.resultItem(): KmpUserResponseItem = KmpUserResponseItem(
 )
 
 fun KmpUserSave.model() = UserModel(
-        id = id ?: "",
+        id = if (this is KmpUserUpdate) (id ?: "") else "",
         fname = fname.modelToString(),
         mname = mname.modelToString(),
         lname = lname.modelToString(),
