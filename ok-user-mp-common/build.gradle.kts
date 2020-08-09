@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.incremental.withJsIC
+
 plugins {
     kotlin("multiplatform")
 }
@@ -17,7 +19,9 @@ kotlin {
         browser()
         nodejs()
     }
-    jvm()
+    jvm {
+        withJava()
+    }
     linuxX64()
 
     sourceSets {

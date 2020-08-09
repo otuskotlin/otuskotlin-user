@@ -1,6 +1,8 @@
 package ru.otus.otuskotlin.common.validators
 
-data class HandleError(
+import kotlin.jvm.JvmOverloads
+
+data class HandleError @JvmOverloads constructor(
         val code: String = "",
         val group: String = "",
         val level: Level = Level.NONE,

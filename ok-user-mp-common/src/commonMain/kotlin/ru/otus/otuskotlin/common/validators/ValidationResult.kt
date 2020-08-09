@@ -1,6 +1,11 @@
 package ru.otus.otuskotlin.common.validators
 
-data class ValidationResult(
+import kotlin.jvm.*
+
+
+data class ValidationResult
+@JvmOverloads
+constructor(
         val errors: List<HandleError> = emptyList()
 ) {
 
@@ -11,4 +16,13 @@ data class ValidationResult(
 
     val isOk
         get() = level.lvl < HandleError.Level.ERROR.lvl
+
+    companion object {
+        @JvmStatic
+        @get:JvmName("getSUCCESS")
+        val SUCCESS = ValidationResult()
+
+        @JvmField
+        val OK = SUCCESS
+    }
 }
