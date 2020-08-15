@@ -3,7 +3,7 @@ package ru.otus.otuskotlin.user.transport.multiplatform.models
 import kotlinx.serialization.Serializable
 
 @Serializable
-class KmpUserUpdate(
+data class KmpUserUpdate(
         var id: String? = null,
         override var fname: String? = null,
         override var mname: String? = null,
