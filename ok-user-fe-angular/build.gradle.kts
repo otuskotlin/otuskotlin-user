@@ -10,6 +10,11 @@ node {
   version = "14.8.0"
 }
 
+dependencies {
+  implementation(project(":ok-user-mp-transport-models"))
+  implementation(project(":ok-user-fe-transport-multiplatform"))
+}
+
 tasks {
   val ngInitLibs by creating(com.moowork.gradle.node.npm.NpxTask::class) {
     dependsOn(yarnSetup)
@@ -32,6 +37,7 @@ tasks {
 
   val ngBuild by creating(com.moowork.gradle.node.npm.NpxTask::class) {
     dependsOn(yarnSetup)
+    dependsOn(jar2npm)
     command = "ng"
     setArgs(listOf(
       "build"
@@ -40,6 +46,7 @@ tasks {
 
   val ngStart by creating(com.moowork.gradle.node.npm.NpxTask::class) {
     dependsOn(yarnSetup)
+    dependsOn(jar2npm)
     command = "ng"
     setArgs(listOf(
       "serve"
