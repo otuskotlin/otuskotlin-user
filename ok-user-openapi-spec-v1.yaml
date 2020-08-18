@@ -1,0 +1,319 @@
+openapi: 3.0.3
+info:
+  title: User management
+  description: 'User management service for
+  [http://user.user](http://user.user) project.'
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: otuskotlin@otus.ru
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+  # externalDocs:
+  # description: Find out more about Swagger
+  # url: http://swagger.io
+servers:
+  - url: http://localhost:8080/user
+tags:
+  - name: user
+    description: Полный набор операций с пользователем
+      # externalDocs:
+      # description: Find out more
+    # url: http://swagger.io
+paths:
+
+  /get:
+    post:
+      tags:
+        - user
+      summary: Get specific user by its ID
+      operationId: userGet
+      requestBody:
+        description: Query structure with user ID
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OaUserQueryGet'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/OaUserQueryGet'
+        required: true
+      responses:
+        200:
+          description: All responses
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OaUserResponseItem'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/OaUserResponseItem'
+      security:
+        - user_auth:
+            - write:pets
+            - read:pets
+      x-codegen-request-body-name: body
+
+  /index:
+    post:
+      tags:
+        - user
+      summary: Get list of user narrowed with filters
+      operationId: userIndex
+      requestBody:
+        description: Query for calling index method
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OaUserQueryIndex'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/OaUserQueryIndex'
+        required: true
+      responses:
+        200:
+          description: All responses
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OaUserResponseIndex'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/OaUserResponseIndex'
+      security:
+        - user_auth:
+            - write:pets
+            - read:pets
+      x-codegen-request-body-name: body
+
+  /create:
+    post:
+      tags:
+        - user
+      summary: Создать нового пользователя
+      operationId: userCreate
+      requestBody:
+        description: Query for calling user method
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OaUserQueryCreate'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/OaUserQueryCreate'
+        required: true
+      responses:
+        200:
+          description: All responses
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OaUserResponseItem'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/OaUserResponseItem'
+      security:
+        - user_auth:
+            - write:pets
+            - read:pets
+      x-codegen-request-body-name: body
+
+  /update:
+    post:
+      tags:
+        - user
+      summary: Изменить данные о пользователе
+      operationId: userUpdate
+      requestBody:
+        description: Query for calling user method
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OaUserQueryUpdate'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/OaUserQueryUpdate'
+        required: true
+      responses:
+        200:
+          description: All responses
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OaUserResponseItem'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/OaUserResponseItem'
+      security:
+        - user_auth:
+            - write:pets
+            - read:pets
+      x-codegen-request-body-name: body
+
+  /delete:
+    post:
+      tags:
+        - user
+      summary: Создать нового пользователя
+      operationId: userDelete
+      requestBody:
+        description: Query for calling user method
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OaUserQueryDelete'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/OaUserQueryDelete'
+        required: true
+      responses:
+        200:
+          description: All responses
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OaUserResponseItem'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/OaUserResponseItem'
+      security:
+        - user_auth:
+            - write:pets
+            - read:pets
+      x-codegen-request-body-name: body
+
+components:
+  schemas:
+
+    OaUserQueryGet:
+      description: Тело запроса в метод get
+      type: object
+      properties:
+        id:
+          type: string
+        debug:
+          type: object
+
+    OaUserQueryIndex:
+      description: Тело запроса в метод index
+      type: object
+      properties:
+        filters:
+          type: object
+
+    OaUserQuerySave:
+      description: Базовый класс запроса для методов create и update
+      type: object
+      properties:
+        fname:
+          type: string
+        mname:
+          type: string
+        lname:
+          type: string
+        dob:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+
+    OaUserQueryCreate:
+      description: Тело запроса в метод create
+      allOf:
+        - $ref: '#/components/schemas/OaUserQuerySave'
+        - type: object
+          properties:
+            debug:
+              type: object
+
+    OaUserQueryUpdate:
+      description: Тело запроса в метод create
+      allOf:
+        - $ref: '#/components/schemas/OaUserQuerySave'
+        - type: object
+          properties:
+            id:
+              type: string
+            debug:
+              type: object
+
+    OaUserQueryDelete:
+      description: Тело запроса в метод delete
+      type: object
+      properties:
+        id:
+          type: string
+        debug:
+          type: object
+
+    OaUser:
+      description: Объект пользователя, который возвращается в ответах на запрос
+      type: object
+      properties:
+        id:
+          type: string
+        fname:
+          type: string
+        mname:
+          type: string
+        lname:
+          type: string
+        dob:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        permissions:
+          type: array
+          items:
+            type: string
+
+    OaUserResponseStatus:
+      type: string
+      enum:
+        - SUCCESS
+        - ERROR
+
+    OaUserResponse:
+      description: Базовый класс для классов OaUserResponseItem и OaUserResponseItem
+      type: object
+      properties:
+        timeReceived:
+          type: string
+        timeResponse:
+          type: string
+        status:
+          $ref: '#/components/schemas/OaUserResponseStatus'
+        debug:
+          type: object
+
+    OaUserResponseItem:
+      allOf:
+        - $ref: '#/components/schemas/OaUserResponse'
+        - type: object
+          properties:
+            data:
+              $ref: '#/components/schemas/OaUser'
+
+    OaUserResponseIndex:
+      allOf:
+        - $ref: '#/components/schemas/OaUserResponse'
+        - type: object
+          properties:
+            data:
+              type: array
+              items:
+                $ref: '#/components/schemas/OaUser'
+
+  securitySchemes:
+    user_auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: http://petstore.swagger.io/oauth/dialog
+          scopes:
+            write:pets: modify pets in your account
+            read:pets: read your pets
