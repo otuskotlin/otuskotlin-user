@@ -19,7 +19,7 @@ tags:
   - name: user
     description: Полный набор операций с пользователем
       # externalDocs:
-      # description: Find out more
+    # description: Find out more
     # url: http://swagger.io
 paths:
 
@@ -78,6 +78,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/OaUserResponseIndex'
+              examples:
+                default:
+                  $ref: '#/components/examples/OaUserResponseIndexExample'
             application/xml:
               schema:
                 $ref: '#/components/schemas/OaUserResponseIndex'
@@ -274,8 +277,8 @@ components:
     OaUserResponseStatus:
       type: string
       enum:
-        - SUCCESS
-        - ERROR
+        - success
+        - error
 
     OaUserResponse:
       description: Базовый класс для классов OaUserResponseItem и OaUserResponseItem
@@ -307,6 +310,23 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/OaUser'
+
+  examples:
+
+    OaUserExample:
+      summary: Response for user example
+      value:
+        fname: "FirstName"
+        mname: "MiddleName"
+        lname: "LastName"
+
+    OaUserResponseIndexExample:
+      summary: Response for index query example
+      value:
+        data:
+          - $ref: '#/components/examples/OaUserExample/value'
+          - $ref: '#/components/examples/OaUserExample/value'
+        status: success
 
   securitySchemes:
     user_auth:
