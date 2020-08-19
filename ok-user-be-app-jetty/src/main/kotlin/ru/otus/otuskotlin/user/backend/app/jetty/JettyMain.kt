@@ -12,6 +12,7 @@ fun main(args: Array<String>) {
     val config = ResourceConfig()
 //            .register(JacksonFeature::class.java) // enable Jackson JSON provider
 //            .register(ObjectMapperProvider::class.java) // use our ObjectMapper rather than the default
+            .register(CORSResponseFilter())
             .register(UserController())
 
     JettyHttpContainerFactory.createServer(baseUri, config).use { server ->
