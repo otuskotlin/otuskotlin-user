@@ -6,8 +6,8 @@ plugins {
     kotlin("jvm")
 }
 
-group = "ru.otus.otuskotlin.user"
-version = "0.0.1"
+group = rootProject.group
+version = rootProject.version
 
 application {
     mainClassName = "io.ktor.server.netty.EngineMain"
