@@ -7,8 +7,8 @@ plugins {
     id("com.bmuschko.docker-java-application")
 }
 
-group = "ru.otus.otuskotlin.user"
-version = "0.0.1"
+group = rootProject.group
+version = rootProject.version
 
 application {
     mainClassName = "io.ktor.server.netty.EngineMain"
