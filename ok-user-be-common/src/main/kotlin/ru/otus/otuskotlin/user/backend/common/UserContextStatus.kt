@@ -6,5 +6,8 @@ enum class UserContextStatus {
     FINISHING,
     FAILING,
     SUCCESS,
-    ERROR
+    ERROR;
+
+    val isError
+        get() = this in arrayOf(FAILING, ERROR)
 }
