@@ -1,6 +1,7 @@
 package ru.otus.otuskotlin.user.transport.multiplatform.backend
 
 import ru.otus.otuskotlin.user.backend.common.UserContext
+import ru.otus.otuskotlin.user.backend.common.models.IUserError
 import ru.otus.otuskotlin.user.backend.common.models.UserModel
 import ru.otus.otuskotlin.user.transport.multiplatform.models.*
 import java.time.LocalDate
@@ -23,13 +24,13 @@ fun UserContext.setQuery(index: KmpUserIndex) = this.apply {
 
 fun UserContext.resultItem(): KmpUserResponseItem = KmpUserResponseItem(
         data = responseUser.kmp(),
-//        errors = errors.kmp()
-        status = KmpUserResultStatuses.SUCCESS
+        errors = errors.map { it.kmp() },
+        status = kmpStatus()
 )
 
 fun UserContext.resultIndex(): KmpUserResponseIndex = KmpUserResponseIndex(
         data = listOf(responseUser.kmp()),
-//        errors = errors.kmp()
+        errors = errors.map { it.kmp() },
         status = KmpUserResultStatuses.SUCCESS
 )
 
@@ -54,12 +55,30 @@ fun UserModel.kmp() = KmpUser(
         permissions = permissions.map { it.toString() }.toMutableSet()
 )
 
-private fun String?.modelToString() = this?.takeIf { it.isNotBlank() } ?: ""
-private fun String?.modelToLocalDate() = this
-        ?.takeIf { it.isNotBlank() }
-        ?.let { LocalDate.parse(it) }
-        ?: LocalDate.MIN
+fun IUserError.kmp() = KmpUserError(
+        code = code.takeIf { it.isNotBlank() },
+        group = group.takeIf { it != IUserError.Groups.NONE }?.toString(),
+        field = field.takeIf { it.isNotBlank() },
+        level = level.kmp(),
+        message = message.takeIf { it.isNotBlank() }
+)
 
-private fun String.kmpToString() = this.takeIf { it.isNotBlank() }
-private fun LocalDate.kmpToString(): String? = this.takeIf { it != LocalDate.MIN }?.toString()
+fun IUserError.Levels.kmp() = when (this) {
+    IUserError.Levels.ERROR, IUserError.Levels.FATAL -> KmpUserError.Level.ERROR
+    else -> KmpUserError.Level.SUCCESS
+}
 
+fun UserContext.kmpStatus() = when {
+    status.isError || errors.any { it.level.isError } -> KmpUserResultStatuses.ERROR
+    errors.any { it.level.isWarning } -> KmpUserResultStatuses.WARNING
+    else -> KmpUserResultStatuses.SUCCESS
+}
+
+            private fun String?.modelToString() = this?.takeIf { it.isNotBlank() } ?: ""
+    private fun String?.modelToLocalDate() = this
+            ?.takeIf { it.isNotBlank() }
+            ?.let { LocalDate.parse(it) }
+            ?: LocalDate.MIN
+
+            private fun String.kmpToString() = this.takeIf { it.isNotBlank() }
+                    private fun LocalDate.kmpToString(): String? = this.takeIf { it != LocalDate.MIN }?.toString()

@@ -7,7 +7,9 @@ data class KmpUserResponseIndex(
         val data: List<KmpUser>? = null,
         val limit: Long? = null,
         val offset: Long? = null,
-        override val status: KmpUserResultStatuses? = null
+        override val status: KmpUserResultStatuses? = null,
+        override val errors: List<KmpUserError>? = null
 ): KmpUserResponse(
-        status = status
+        status = status,
+        errors = errors
 )

@@ -6,6 +6,7 @@ pluginManagement {
         val openapiVersion: String by settings
         val springVersion: String by settings
         val springDependencyVersion: String by settings
+        val bmuschkoVersion: String by settings
 
         kotlin("multiplatform") version kotlinVersion apply false
         kotlin("jvm") version kotlinVersion apply false
@@ -16,7 +17,7 @@ pluginManagement {
         id("org.jetbrains.kotlin.plugin.spring") version kotlinVersion
         id("org.springframework.boot") version springVersion
         id("io.spring.dependency-management") version springDependencyVersion
-
+        id("com.bmuschko.docker-java-application") version bmuschkoVersion
     }
 
     repositories {
@@ -37,3 +38,4 @@ include("ok-user-be-app-jetty")
 include("ok-user-fe-transport-multiplatform")
 include("ok-user-fe-angular")
 include("ok-user-oa-transport-models-jvm")
+include("ok-user-be-app-ktor")
