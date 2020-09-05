@@ -10,6 +10,7 @@ import ru.otus.otuskotlin.user.transport.multiplatform.backend.resultIndex
 import ru.otus.otuskotlin.user.transport.multiplatform.backend.resultItem
 import ru.otus.otuskotlin.user.transport.multiplatform.backend.setQuery
 import ru.otus.otuskotlin.user.transport.multiplatform.models.*
+import java.lang.RuntimeException
 import java.time.LocalDate
 import java.util.*
 
@@ -34,7 +35,7 @@ class KmpUserService() {
     suspend fun get(query: KmpUserGet): KmpUserResponseItem = UserContext().run {
         try {
             setQuery(query)
-            responseUser = userModel
+            responseUser = userModel.copy(id = query.userId ?: throw RuntimeException("No userId"))
             status = UserContextStatus.SUCCESS
         } catch (e: Throwable) {
             log.error("Get chain error", e)
