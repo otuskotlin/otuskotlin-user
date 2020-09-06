@@ -27,7 +27,8 @@ kotless {
         }
         optimization {
             mergeLambda = io.kotless.KotlessConfig.Optimization.MergeLambda.All
-            autowarm = io.kotless.plugin.gradle.dsl.KotlessConfig.Optimization.Autowarm(enable = true, minutes = 5)
+//            autowarm = io.kotless.plugin.gradle.dsl.KotlessConfig.Optimization.Autowarm(enable = true, minutes = 5)
+
         }
     }
 
@@ -36,15 +37,17 @@ kotless {
     }
 
     extensions {
+
         local {
             useAWSEmulation = true
         }
 
-//        terraform {
+        terraform {
+            allowDestroy = true
 //            files {
 //                add(file("src/main/tf/extensions.tf"))
 //            }
-//        }
+        }
     }
 
 }
