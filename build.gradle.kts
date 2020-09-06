@@ -4,6 +4,7 @@ plugins {
     kotlin("multiplatform") apply false
     kotlin("plugin.serialization") apply false
     id("com.bmuschko.docker-java-application") apply false
+    id("io.kotless") apply false
 }
 
 group = "ru.otus.otuskotlin.user"
