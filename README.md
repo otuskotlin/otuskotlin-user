@@ -23,3 +23,13 @@
 1. [ok-user-be-app-jetty](ok-user-be-app-jetty/README.md) - Минимальное тестирование транспортных моделей на примере Jetty
 1. [ok-user-oa-transport-models-jvm](ok-user-oa-transport-models-jvm/README.md) - Приложение на Spring Boot, сгенерированное с использованием OpenAPI
 1. [ok-user-be-app-ktor](ok-user-be-app-ktor/README.md) - "Микросервисное" преложение на KTOR
+1. [ok-user-be-app-kotless](ok-user-be-app-kotless/README.md) - Бессерверное (Serverless) преложение на Kotless
+
+#### Сборка
+
+Особенность текущей версии в том, что Kotless 0.1.6 работаент с `kotlinx.serialization 0.20.0`, тогда как 
+`ok-user-be-app-ktor` не может работать с этой версией и требует `1.0.0-RC`.
+
+Поэтому в скриптах сборки проверяется версия Kotlin и `kotlinx.sertialization`. При версии Kotlin `1.3.*` и 
+`kotlinx.serialization` `0.*` автоматически подключается `ok-user-be-app-kotless`, иначе будет собираться 
+`ok-user-be-app-ktor`.
