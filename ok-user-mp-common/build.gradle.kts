@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.incremental.withJsIC
-
 plugins {
     kotlin("multiplatform")
 }
@@ -44,8 +42,8 @@ kotlin {
         }
         val jsTest by getting {
             dependencies {
-                implementation(npm("is-sorted", "last"))
-                implementation(npm("mathjs", "last"))
+                implementation(npm("is-sorted", "1.0.5"))
+                implementation(npm("mathjs", "7.2.0"))
                 implementation(kotlin("test"))
                 implementation(kotlin("test-js"))
             }
