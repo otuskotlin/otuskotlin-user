@@ -1,4 +1,4 @@
-package ru.otus.otuskotlin.common.dsl
+package ru.otus.otuskotlin.user.backend.common.dsl
 
 import kotlin.test.Test
 
