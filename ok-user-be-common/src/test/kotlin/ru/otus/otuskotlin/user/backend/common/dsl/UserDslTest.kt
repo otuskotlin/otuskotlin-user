@@ -4,6 +4,8 @@ import ru.otus.otuskotlin.user.backend.common.models.UserModel
 import ru.otus.otuskotlin.user.backend.common.models.UserPermissionsModel
 import java.time.LocalDate
 import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class UserDslTest {
     @Test
@@ -30,5 +32,16 @@ class UserDslTest {
             }
         }
 
+        assertEquals("Иванович", user.mname)
+        assertEquals("2000-01-01", user.dob.toString())
+        assertEquals("ivan@ivanov.example", user.email)
+        assertTrue("permission must contain VIEW") {
+            user.permissions.containsAll(listOf(
+                    UserPermissionsModel.VIEW,
+                    UserPermissionsModel.SEND_MESSAGE,
+                    UserPermissionsModel.UPDATE,
+                    UserPermissionsModel.GET_NEWS
+            ))
+        }
     }
 }

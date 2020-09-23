@@ -17,6 +17,8 @@ class UserPermissionsDsl {
     operator fun String.unaryPlus() = add(this)
     operator fun UserPermissionsModel.unaryPlus() = add(this)
 
+    fun get() = permissions.toSet()
+
     companion object {
         val EMPTY = UserPermissionsDsl()
     }
