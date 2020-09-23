@@ -2,6 +2,7 @@ package ru.otus.otuskotlin.user.backend.common.dsl
 
 import ru.otus.otuskotlin.user.backend.common.models.UserModel
 
+@UserDslMarker
 class UserDsl {
 
     private var id: String = ""

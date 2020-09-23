@@ -3,9 +3,7 @@ package ru.otus.otuskotlin.user.backend.common.dsl
 import ru.otus.otuskotlin.user.backend.common.models.UserModel
 import ru.otus.otuskotlin.user.backend.common.models.UserPermissionsModel
 import java.time.LocalDate
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
+import kotlin.test.*
 
 class UserDslTest {
     @Test
@@ -27,8 +25,8 @@ class UserDslTest {
             permission {
                 add("VIEW")
                 add(UserPermissionsModel.SEND_MESSAGE)
-                + "UPDATE"
-                + UserPermissionsModel.GET_NEWS
+                +"UPDATE"
+                +UserPermissionsModel.GET_NEWS
             }
         }
 
@@ -42,6 +40,16 @@ class UserDslTest {
                     UserPermissionsModel.UPDATE,
                     UserPermissionsModel.GET_NEWS
             ))
+        }
+    }
+
+    @Test
+    fun scopeControlTest() {
+        val user = user {
+            name {
+                // Must cause compile time failure
+//                name {}
+            }
         }
     }
 }
