@@ -6,10 +6,6 @@ plugins {
 group = rootProject.group
 version = rootProject.version
 
-repositories {
-    mavenCentral()
-}
-
 kotlin {
     /* Targets configuration omitted. 
     *  To find out how to configure the targets, please follow the link:
@@ -23,7 +19,6 @@ kotlin {
 
     sourceSets {
         val serializationVersion: String by project
-        val coroutinesVersion: String by project
 
         val commonMain by getting {
             dependencies {
@@ -31,7 +26,7 @@ kotlin {
                 if (serializationVersion.startsWith("0.")) {
                     api("org.jetbrains.kotlinx:kotlinx-serialization-runtime-common:$serializationVersion")
                 } else {
-                    api("org.jetbrains.kotlinx:kotlinx-serialization-core:$serializationVersion")
+                    api("org.jetbrains.kotlinx:kotlinx-serialization-json:$serializationVersion")
                 }
 
                 implementation(project(":ok-user-mp-common"))

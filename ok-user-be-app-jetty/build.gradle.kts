@@ -7,10 +7,6 @@ plugins {
 group = rootProject.group
 version = rootProject.version
 
-repositories {
-    mavenCentral()
-}
-
 application {
     mainClassName = "ru.otus.otuskotlin.user.backend.app.jetty.JettyMainKt"
 }

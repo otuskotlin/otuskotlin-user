@@ -1,13 +1,10 @@
 package ru.otus.otuskotlin.user.transport.frontend.multiplatform
 
-import kotlinx.serialization.ImplicitReflectionSerializer
+import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
 import kotlinx.serialization.serializer
-import org.w3c.dom.events.Event
-import org.w3c.fetch.*
 import org.w3c.xhr.XMLHttpRequest
-import kotlin.browser.window
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
@@ -15,11 +12,11 @@ import kotlin.reflect.KClass
 
 actual class KmpUserBackendRestService {
 
-    private val jsonMapper = Json(JsonConfiguration.Default)
+    private val jsonMapper = Json
 
     actual suspend inline fun <reified T : Any, reified U : Any> request(endpoint: String, query: T): U = requestFull<T, U>(endpoint, query, T::class, U::class)
 
-    @OptIn(ImplicitReflectionSerializer::class)
+    @OptIn(InternalSerializationApi::class)
     actual suspend fun <T : Any, U : Any> requestFull(endpoint: String, query: T, queryClass: KClass<T>, responseClass: KClass<U>): U = suspendCoroutine { cont ->
 //        println(jsonMapper.stringify<T>(queryClass.serializer(), query))
 //        window
@@ -55,7 +52,7 @@ actual class KmpUserBackendRestService {
 //                    cont.resumeWithException(e)
 //                }
 
-        val jsonString = jsonMapper.stringify<T>(queryClass.serializer(), query)
+        val jsonString = jsonMapper.encodeToString<T>(queryClass.serializer(), query)
         XMLHttpRequest().apply {
             open("POST", endpoint, true)
             setRequestHeader("Content-type", "application/json");
@@ -64,7 +61,7 @@ actual class KmpUserBackendRestService {
                 //Call a function when the state changes.
                 if (readyState == 4.toShort()) {
                     if (status == 200.toShort()) {
-                        val result = jsonMapper.parse(responseClass.serializer(), responseText)
+                        val result = jsonMapper.decodeFromString(responseClass.serializer(), responseText)
                         cont.resume(result)
                     } else {
                         cont.resumeWithException(RuntimeException("Error server query"))
