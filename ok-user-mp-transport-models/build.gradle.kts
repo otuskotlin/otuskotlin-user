@@ -15,7 +15,7 @@ kotlin {
         nodejs()
     }
     jvm()
-    linuxX64()
+//    linuxX64()
 
     sourceSets {
         val serializationVersion: String by project
@@ -71,18 +71,18 @@ kotlin {
             }
         }
 
-        val linuxX64Main by getting {
-            dependencies {
-                implementation(kotlin("stdlib"))
-                if (serializationVersion.startsWith("0.")) {
-                    implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime-native:$serializationVersion")
-                }
-            }
-            val linuxX64Test by getting {
-                dependencies {
-                    implementation(kotlin("test"))
-                }
-            }
-        }
+//        val linuxX64Main by getting {
+//            dependencies {
+////                implementation(kotlin("stdlib"))
+//                if (serializationVersion.startsWith("0.")) {
+//                    implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime-native:$serializationVersion")
+//                }
+//            }
+//            val linuxX64Test by getting {
+//                dependencies {
+//                    implementation(kotlin("test"))
+//                }
+//            }
+//        }
     }
 }
