@@ -33,7 +33,7 @@ class Processor<T> private constructor(
 
         fun handler(block: Handler.Builder<T>.() -> Unit) = handlers.add(corHandler(block))
         fun exec(block: IExec<T>) = handlers.add(block)
-        fun exec(block: T.() -> Unit) {
+        fun exec(block: CorHandler<T>) {
             handlers.add(
                     corHandler {
                         exec(block)
