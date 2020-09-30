@@ -7,6 +7,7 @@ data class UserContext(
         var requestUserId: String = "",
         var requestUser: UserModel = UserModel.NONE,
         var responseUser: UserModel = UserModel.NONE,
+        var responseUsers: MutableList<UserModel> = mutableListOf(),
         val errors: MutableList<IUserError> = mutableListOf(),
         var status: UserContextStatus = UserContextStatus.NONE
 )

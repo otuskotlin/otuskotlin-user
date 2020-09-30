@@ -1,14 +1,13 @@
 package ru.otus.otuskotlin.user.transport.multiplatform.models
 
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonConfiguration
 import kotlin.test.Test
+import kotlinx.serialization.json.Json
 import kotlin.test.assertFalse
 
 class ModelSerializeUserCreateTest {
     @Test
     fun serialize() {
-        val json = Json(JsonConfiguration.Stable)
+//        val json = Json(JsonConfiguration.Stable)
         val data = KmpUserCreate(
                 fname = "First",
                 mname = "Middle",
@@ -18,7 +17,7 @@ class ModelSerializeUserCreateTest {
                 phone = "+78989"
         )
 
-        val jsonData = json.stringify(KmpUserCreate.serializer(), data)
+        val jsonData = Json.encodeToString(KmpUserCreate.serializer(), data)
         println(jsonData)
         assertFalse {
             jsonData.contains("\"id\":")

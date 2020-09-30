@@ -5,10 +5,6 @@ plugins {
 group = rootProject.group
 version = rootProject.version
 
-repositories {
-    mavenCentral()
-}
-
 kotlin {
     /* Targets configuration omitted. 
     *  To find out how to configure the targets, please follow the link:
@@ -29,42 +25,49 @@ kotlin {
                 implementation(kotlin("stdlib-common"))
                 implementation(project(":ok-user-mp-transport-models"))
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-common:$coroutinesVersion")
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime-common:$serializationVersion")
+                if (serializationVersion.startsWith("0.")) {
+                    implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime-common:$serializationVersion")
+                } else {
+                    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$serializationVersion")
+                }
             }
-        }
-        val commonTest by getting {
-            dependencies {
-                implementation(kotlin("test-common"))
-                implementation(kotlin("test-annotations-common"))
+            val commonTest by getting {
+                dependencies {
+                    implementation(kotlin("test-common"))
+                    implementation(kotlin("test-annotations-common"))
+                }
             }
-        }
 
-        val jsMain by getting {
-            dependencies {
-                implementation(kotlin("stdlib-js"))
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:$coroutinesVersion")
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime-js:$serializationVersion")
+            val jsMain by getting {
+                dependencies {
+                    implementation(kotlin("stdlib-js"))
+                    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:$coroutinesVersion")
+                    if (serializationVersion.startsWith("0.")) {
+                        implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime-js:$serializationVersion")
+                    }
+                }
             }
-        }
-        val jsTest by getting {
-            dependencies {
-                implementation(kotlin("test"))
-                implementation(kotlin("test-js"))
+            val jsTest by getting {
+                dependencies {
+                    implementation(kotlin("test"))
+                    implementation(kotlin("test-js"))
+                }
             }
-        }
 
-        val jvmMain by getting {
-            dependencies {
-                implementation(kotlin("stdlib-jdk8"))
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
-//                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:$serializationVersion")
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime:$serializationVersion")
+            val jvmMain by getting {
+                dependencies {
+                    implementation(kotlin("stdlib-jdk8"))
+                    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
+                    if (serializationVersion.startsWith("0.")) {
+                        implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime:$serializationVersion")
+                    }
+                }
             }
-        }
-        val jvmTest by getting {
-            dependencies {
-                implementation(kotlin("test"))
-                implementation(kotlin("test-junit"))
+            val jvmTest by getting {
+                dependencies {
+                    implementation(kotlin("test"))
+                    implementation(kotlin("test-junit"))
+                }
             }
         }
     }

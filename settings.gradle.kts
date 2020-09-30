@@ -32,19 +32,21 @@ pluginManagement {
         jcenter()
     }
 }
+//enableFeaturePreview("GRADLE_METADATA")
 
-include("ok-user-mp-common")
-include("ok-user-mp-transport-models")
+include(":ok-user-mp-common")
+include(":ok-user-mp-transport-models")
 
-include("ok-user-be-common")
-include("ok-user-be-transport-multiplatform")
-include("ok-user-fe-transport-multiplatform")
-include("ok-user-fe-angular")
-include("ok-user-oa-transport-models-jvm")
+include(":ok-user-be-common")
+include(":ok-user-be-transport-multiplatform")
+include(":ok-user-fe-transport-multiplatform")
+//include("ok-user-fe-angular")
+//include("ok-user-oa-transport-models-jvm")
 
-include("ok-user-be-app-jetty")
+include(":ok-user-be-app-jetty")
 if (serializationVersion.startsWith("0.")) {
-    include("ok-user-be-app-kotless")
+    include(":ok-user-be-app-kotless")
 } else {
-    include("ok-user-be-app-ktor")
+    include(":ok-user-be-app-ktor")
 }
+include("ok-user-be-logics")

@@ -10,11 +10,6 @@ plugins {
 group = rootProject.group
 version = rootProject.version
 
-repositories {
-    mavenCentral()
-    jcenter()
-}
-
 kotless {
     config {
         bucket = "com.crowdproj.user"

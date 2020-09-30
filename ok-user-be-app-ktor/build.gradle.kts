@@ -39,12 +39,6 @@ docker {
 }
 
 
-repositories {
-    mavenLocal()
-    jcenter()
-    maven { url = uri("https://kotlin.bintray.com/ktor") }
-}
-
 dependencies {
     implementation(project(":ok-user-be-common"))
     implementation(project(":ok-user-mp-transport-models"))

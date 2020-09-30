@@ -11,3 +11,16 @@ Content-Type: application/json
 }
 
 ###
+POST https://user.crowdproj.com/api/create
+Content-Type: application/json
+
+{
+  "fname": "First",
+  "mname": "Middle",
+  "lname": "Last",
+  "dob": "2000-01-01",
+  "email": "email@email.email",
+  "phone": "+7 999 999 9999"
+}
+
+###

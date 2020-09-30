@@ -5,10 +5,6 @@ plugins {
 group = rootProject.group
 version = rootProject.version
 
-repositories {
-    mavenCentral()
-}
-
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
     testImplementation(kotlin("test"))
