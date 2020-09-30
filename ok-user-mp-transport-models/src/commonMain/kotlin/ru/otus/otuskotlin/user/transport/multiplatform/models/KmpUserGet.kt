@@ -5,8 +5,18 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class KmpUserGet(
         val userId: String? = null,
-        val debug: KmpDebug? = null
+        val debug: Debug? = null
 ) {
     @Serializable
-    class KmpDebug {}
+    data class Debug(
+            var stub: StubCases? = null
+    ) {
+
+    }
+
+    @Serializable
+    enum class StubCases {
+        NONE,
+        SUCCESS
+    }
 }

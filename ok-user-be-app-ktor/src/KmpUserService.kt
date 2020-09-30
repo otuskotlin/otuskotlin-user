@@ -6,6 +6,7 @@ import ru.otus.otuskotlin.user.backend.common.UserContextStatus
 import ru.otus.otuskotlin.user.backend.common.errors.InternalServerError
 import ru.otus.otuskotlin.user.backend.common.models.UserModel
 import ru.otus.otuskotlin.user.backend.common.models.UserPermissionsModel
+import ru.otus.otuskotlin.user.backend.logics.UserCrud
 import ru.otus.otuskotlin.user.transport.multiplatform.backend.resultIndex
 import ru.otus.otuskotlin.user.transport.multiplatform.backend.resultItem
 import ru.otus.otuskotlin.user.transport.multiplatform.backend.setQuery
@@ -14,29 +15,13 @@ import java.lang.RuntimeException
 import java.time.LocalDate
 import java.util.*
 
-class KmpUserService() {
+class KmpUserService(val crud: UserCrud) {
 
     private val log = LoggerFactory.getLogger(this::class.java)!!
 
-    private val userModel = UserModel(
-            id = "1234123",
-            fname = "First",
-            mname = "Middle",
-            lname = "Last",
-            dob = LocalDate.of(2000, 1, 1),
-            email = "email@email.email",
-            phone = "+790988768768",
-            permissions = mutableSetOf(
-                    UserPermissionsModel.VIEW,
-                    UserPermissionsModel.VIEW
-            )
-    )
-
     suspend fun get(query: KmpUserGet): KmpUserResponseItem = UserContext().run {
         try {
-            setQuery(query)
-            responseUser = userModel.copy(id = query.userId ?: throw RuntimeException("No userId"))
-            status = UserContextStatus.SUCCESS
+            crud.get(setQuery(query))
         } catch (e: Throwable) {
             log.error("Get chain error", e)
             errors += InternalServerError.instance
@@ -46,9 +31,7 @@ class KmpUserService() {
 
     suspend fun index(query: KmpUserIndex): KmpUserResponseIndex = UserContext().run {
         try {
-            setQuery(query)
-            responseUser = userModel
-            status = UserContextStatus.SUCCESS
+            crud.index(setQuery(query))
         } catch (e: Throwable) {
             log.error("Index chain error", e)
             errors += InternalServerError.instance
@@ -56,11 +39,9 @@ class KmpUserService() {
         resultIndex()
     }
 
-    fun create(query: KmpUserCreate): KmpUserResponseItem = UserContext().run {
+    suspend fun create(query: KmpUserCreate): KmpUserResponseItem = UserContext().run {
         try {
-            setQuery(query)
-            responseUser = requestUser.copy(id = UUID.randomUUID().toString())
-            status = UserContextStatus.SUCCESS
+            crud.create(setQuery(query))
         } catch (e: Throwable) {
             log.error("Create chain error", e)
             errors += InternalServerError.instance
@@ -68,11 +49,9 @@ class KmpUserService() {
         resultItem()
     }
 
-    fun update(query: KmpUserUpdate): KmpUserResponseItem = UserContext().run {
+    suspend fun update(query: KmpUserUpdate): KmpUserResponseItem = UserContext().run {
         try {
-            setQuery(query)
-            responseUser = requestUser.copy()
-            status = UserContextStatus.SUCCESS
+            crud.update(setQuery(query))
         } catch (e: Throwable) {
             log.error("Update chain error", e)
             errors += InternalServerError.instance
@@ -80,11 +59,9 @@ class KmpUserService() {
         resultItem()
     }
 
-    fun delete(query: KmpUserDelete): KmpUserResponseItem = UserContext().run {
+    suspend fun delete(query: KmpUserDelete): KmpUserResponseItem = UserContext().run {
         try {
-            setQuery(query)
-            responseUser = requestUser.copy()
-            status = UserContextStatus.SUCCESS
+            crud.delete(setQuery(query))
         } catch (e: Throwable) {
             log.error("Delete chain error", e)
             errors += InternalServerError.instance

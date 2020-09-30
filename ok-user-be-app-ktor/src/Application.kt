@@ -10,6 +10,7 @@ import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.serialization.*
 import kotlinx.serialization.json.Json
+import ru.otus.otuskotlin.user.backend.logics.UserCrud
 import ru.otus.otuskotlin.user.transport.multiplatform.models.*
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
@@ -18,7 +19,8 @@ fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 @kotlin.jvm.JvmOverloads
 fun Application.module(testing: Boolean = false) {
 
-    val service = KmpUserService()
+    val crud = UserCrud()
+    val service = KmpUserService(crud = crud)
 
     install(CORS) {
         method(HttpMethod.Options)
