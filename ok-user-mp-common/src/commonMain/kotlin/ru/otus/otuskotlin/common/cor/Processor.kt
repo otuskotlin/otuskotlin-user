@@ -40,6 +40,7 @@ class Processor<T> private constructor(
                     }
             )
         }
+        fun processor(block: Processor.Builder<T>.() -> Unit) = handlers.add(cor(block))
 
         fun build() = Processor(
                 matcher = matcher,

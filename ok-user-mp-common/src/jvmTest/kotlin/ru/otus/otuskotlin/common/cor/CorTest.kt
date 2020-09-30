@@ -39,6 +39,40 @@ internal class CorTest {
         println("Finishing test")
     }
 
+    @Test
+    fun nestedProcessor() {
+        val chain: IExec<TestContext> = cor {
+            exec { a = "a" }
+            processor {
+                isApplicable { true }
+
+                exec(object : IExec<TestContext> {
+                    override suspend fun exec(ctx: TestContext) {
+                        ctx.a += "c"
+                    }
+                })
+
+                handler {
+                    isApplicable {
+                        println("Check a: ${a}")
+                        a.isNotEmpty()
+                    }
+                    exec {
+                        a += "b"
+                    }
+                }
+            }
+        }
+        val ctx = TestContext()
+        println("Starting test")
+        runBlocking {
+            chain.exec(ctx)
+            assertEquals("acb", ctx.a)
+            println("Test Done")
+        }
+        println("Finishing test")
+    }
+
     data class TestContext(
             var a: String = ""
     )
