@@ -16,12 +16,16 @@ kotlin {
     jvm {
         withJava()
     }
-    linuxX64()
+//    linuxX64()
 
     sourceSets {
+        val coroutinesVersion: String by project
         val commonMain by getting {
             dependencies {
+                implementation(kotlin("stdlib"))
                 implementation(kotlin("stdlib-common"))
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-common:$coroutinesVersion")
+//                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
             }
         }
         val commonTest by getting {
@@ -34,6 +38,7 @@ kotlin {
         val jsMain by getting {
             dependencies {
                 implementation(kotlin("stdlib-js"))
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:$coroutinesVersion")
             }
         }
         val jsTest by getting {
@@ -48,6 +53,7 @@ kotlin {
         val jvmMain by getting {
             dependencies {
                 implementation(kotlin("stdlib-jdk8"))
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
             }
         }
         val jvmTest by getting {
@@ -56,5 +62,17 @@ kotlin {
                 implementation(kotlin("test-junit"))
             }
         }
+
+//        val linuxX64Main by getting {
+//            dependencies {
+//                implementation(kotlin("stdlib"))
+//                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-native:$coroutinesVersion")
+//            }
+//        }
+//        val linuxX64Test by getting {
+//            dependencies {
+//                implementation(kotlin("test"))
+//            }
+//        }
     }
 }
