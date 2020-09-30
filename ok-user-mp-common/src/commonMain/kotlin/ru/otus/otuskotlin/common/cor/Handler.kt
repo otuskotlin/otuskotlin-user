@@ -39,5 +39,3 @@ open class Handler<T> private constructor(
         )
     }
 }
-
-fun <T> corHandler(block: Handler.Builder<T>.() -> Unit): Handler<T> = Handler.Builder<T>().apply(block).build()
