@@ -5,6 +5,7 @@ import ru.otus.otuskotlin.user.backend.common.models.*
 data class UserContext(
         var requestUserId: String = "",
         var requestUser: UserModel = UserModel.NONE,
+        var requestUserFilter: UserIndexFilter = UserIndexFilter.NONE,
         var stubGetCase: UserGetStubCases = UserGetStubCases.NONE,
         var stubIndexCase: UserIndexStubCases = UserIndexStubCases.NONE,
         var stubCreateCase: UserCreateStubCases = UserCreateStubCases.NONE,
