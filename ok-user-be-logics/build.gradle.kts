@@ -18,6 +18,7 @@ dependencies {
     implementation(project(":ok-user-be-common"))
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
 
-    implementation(kotlin("test"))
-    implementation(kotlin("test-junit"))
+    testImplementation(kotlin("test"))
+    testImplementation(kotlin("test-junit"))
+    testImplementation(project(":ok-user-be-repo-inmemory"))
 }

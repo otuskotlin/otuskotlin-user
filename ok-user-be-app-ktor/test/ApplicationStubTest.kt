@@ -10,7 +10,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 import kotlin.test.fail
 
-class ApplicationTest {
+class ApplicationStubTest {
     @Test
     fun testRoot() {
         withTestApplication({ module(testing = true) }) {

@@ -1,20 +1,38 @@
 package ru.otus.otuskotlin.user.backend.logics
 
 import kotlinx.coroutines.runBlocking
+import ru.otus.otuskotlin.backend.repository.inmemory.UserInMemoryDto
+import ru.otus.otuskotlin.backend.repository.inmemory.UserRepositoryInMemoty
 import ru.otus.otuskotlin.user.backend.common.UserContext
 import ru.otus.otuskotlin.user.backend.common.UserContextStatus
-import ru.otus.otuskotlin.user.backend.common.models.*
+import ru.otus.otuskotlin.user.backend.common.models.UserIndexFilter
+import ru.otus.otuskotlin.user.backend.common.models.UserModel
 import ru.otus.otuskotlin.user.backend.common.repositories.IUserRepository
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.time.DurationUnit
+import kotlin.time.ExperimentalTime
+import kotlin.time.toDuration
 
-internal class UserCrudTest {
+internal class UserCrudInMemoryTest {
+    @OptIn(ExperimentalTime::class)
+    private val userRepo = UserRepositoryInMemoty(
+            ttl = 20.toDuration(DurationUnit.SECONDS),
+            listOf(
+                    UserInMemoryDto(id = "get-id", fname = "Ivan"),
+                    UserInMemoryDto(id = "update-id"),
+                    UserInMemoryDto(id = "delete-id", fname = "Ivan"),
+                    UserInMemoryDto(id = "index-id-1", dob = "2020-01-01", fname = "Ivan"),
+                    UserInMemoryDto(id = "index-id-2", dob = "2020-01-01", fname = "Petr"),
+                    UserInMemoryDto(id = "index-id-3", dob = "2020-01-01", fname = "John"),
+            )
+    )
+
     @Test
     fun crudGetTest() {
-        val crud = UserCrud()
+        val crud = UserCrud(userRepo)
         val context = UserContext(
-                requestUserId = "get-id",
-                stubGetCase = UserGetStubCases.SUCCESS
+                requestUserId = "get-id"
         )
         runBlocking {
             crud.get(context)
@@ -27,31 +45,30 @@ internal class UserCrudTest {
 
     @Test
     fun crudIndexTest() {
-        val crud = UserCrud()
+        val crud = UserCrud(userRepo)
         val context = UserContext(
-                stubIndexCase = UserIndexStubCases.SUCCESS
+                requestUserFilter = UserIndexFilter(dob = "2020-01-01")
         )
         runBlocking {
             crud.index(context)
         }
 
         assertEquals(UserContextStatus.SUCCESS, context.status)
-        assertEquals(2, context.responseUsers.size)
-        assertEquals("ivanov-id", context.responseUsers.first().id)
+        assertEquals(3, context.responseUsers.size)
+        assertEquals("index-id-1", context.responseUsers.first().id)
         assertEquals("Ivan", context.responseUsers.first().fname)
-        assertEquals("Petr", context.responseUsers.last().fname)
+        assertEquals("John", context.responseUsers.last().fname)
     }
 
     @Test
     fun crudCreateTest() {
-        val crud = UserCrud()
+        val crud = UserCrud(userRepo)
         val context = UserContext(
                 requestUser = UserModel(
                         fname = "Ivan",
                         mname = "Ivanovich",
                         lname = "Ivanov"
-                ),
-                stubCreateCase = UserCreateStubCases.SUCCESS
+                )
         )
         runBlocking {
             crud.create(context)
@@ -63,38 +80,36 @@ internal class UserCrudTest {
 
     @Test
     fun crudUpdateTest() {
-        val crud = UserCrud()
+        val crud = UserCrud(userRepo)
         val context = UserContext(
                 requestUser = UserModel(
-                        id = "ivanov-id",
+                        id = "update-id",
                         fname = "Ivan",
                         mname = "Ivanovich",
                         lname = "Ivanov"
-                ),
-                stubUpdateCase = UserUpdateStubCases.SUCCESS
+                )
         )
         runBlocking {
             crud.update(context)
         }
 
         assertEquals(UserContextStatus.SUCCESS, context.status)
-        assertEquals("ivanov-id", context.responseUser.id)
+        assertEquals("update-id", context.responseUser.id)
         assertEquals("Ivan", context.responseUser.fname)
     }
 
     @Test
     fun crudDeleteTest() {
-        val crud = UserCrud(userRepo = IUserRepository.NONE)
+        val crud = UserCrud(userRepo)
         val context = UserContext(
-                requestUserId = "ivanov-id",
-                stubDeleteCase = UserDeleteStubCases.SUCCESS
+                requestUserId = "delete-id"
         )
         runBlocking {
             crud.delete(context)
         }
 
         assertEquals(UserContextStatus.SUCCESS, context.status)
-        assertEquals("ivanov-id", context.responseUser.id)
+        assertEquals("delete-id", context.responseUser.id)
         assertEquals("Ivan", context.responseUser.fname)
     }
 }

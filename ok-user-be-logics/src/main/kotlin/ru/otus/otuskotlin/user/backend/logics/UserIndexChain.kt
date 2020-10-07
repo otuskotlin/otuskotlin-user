@@ -3,15 +3,18 @@ package ru.otus.otuskotlin.user.backend.logics
 import ru.otus.otuskotlin.common.cor.cor
 import ru.otus.otuskotlin.user.backend.common.UserContext
 import ru.otus.otuskotlin.user.backend.common.UserContextStatus
+import ru.otus.otuskotlin.user.backend.common.errors.GeneralError
 import ru.otus.otuskotlin.user.backend.common.models.UserIndexStubCases
 import ru.otus.otuskotlin.user.backend.common.models.UserModel
 import ru.otus.otuskotlin.user.backend.common.models.UserPermissionsModel
+import ru.otus.otuskotlin.user.backend.common.repositories.IUserRepository
+import ru.otus.otuskotlin.user.backend.logics.handlers.responsePrepareHandler
 import java.time.LocalDate
 
-class UserIndexChain {
+class UserIndexChain(private val userRepo: IUserRepository) {
 
     suspend fun exec(context: UserContext) = chain.exec(context.apply {
-
+        userRepo = this@UserIndexChain.userRepo
     })
 
     companion object {
@@ -65,11 +68,20 @@ class UserIndexChain {
             // Валидация
 
             // Обработка и работа с БД
+            handler {
+                isApplicable { status == UserContextStatus.RUNNING }
+                exec {
+                    try {
+                        responseUsers = userRepo.index(requestUserFilter).toMutableList()
+                    } catch (e: Throwable) {
+                        status = UserContextStatus.FAILING
+                        errors.add(GeneralError(code = "repo-index-error", e = e))
+                    }
+                }
+            }
 
             // Подготовка ответа
-            exec {
-                status = UserContextStatus.SUCCESS
-            }
+            exec(responsePrepareHandler)
         }
     }
 }

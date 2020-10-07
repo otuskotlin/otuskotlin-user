@@ -13,12 +13,20 @@ import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
 
-class UserRepositoryInMemoty @OptIn(ExperimentalTime::class) constructor(ttl: Duration) : IUserRepository {
+class UserRepositoryInMemoty @OptIn(ExperimentalTime::class) constructor(
+        ttl: Duration,
+        initObjects: Collection<UserInMemoryDto> = emptyList()
+) : IUserRepository {
     @OptIn(ExperimentalTime::class)
     private var cache: Cache<String, UserInMemoryDto> = object : Cache2kBuilder<String, UserInMemoryDto>() {}
             .expireAfterWrite(ttl.toLongMilliseconds(), TimeUnit.MILLISECONDS) // expire/refresh after 5 minutes
             .suppressExceptions(false)
             .build()
+            .also { cache ->
+                initObjects.forEach {
+                    cache.put(it.id, it)
+                }
+            }
 
     override fun get(id: String): UserModel {
         if (id.isBlank()) throw UserRepoWrongId(id)
@@ -27,6 +35,7 @@ class UserRepositoryInMemoty @OptIn(ExperimentalTime::class) constructor(ttl: Du
 
     override fun index(filter: UserIndexFilter): Collection<UserModel> = cache.asMap()
             .filter {
+                if (filter.dob != null && it.value.dob != filter.dob) return@filter false
                 true
             }
             .map { it.value.toModel() }

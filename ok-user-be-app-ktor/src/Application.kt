@@ -10,16 +10,22 @@ import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.serialization.*
 import kotlinx.serialization.json.Json
+import ru.otus.otuskotlin.backend.repository.inmemory.UserRepositoryInMemoty
 import ru.otus.otuskotlin.user.backend.logics.UserCrud
 import ru.otus.otuskotlin.user.transport.multiplatform.models.*
+import kotlin.time.DurationUnit
+import kotlin.time.ExperimentalTime
+import kotlin.time.toDuration
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
+@OptIn(ExperimentalTime::class)
 @Suppress("unused") // Referenced in application.conf
 @kotlin.jvm.JvmOverloads
 fun Application.module(testing: Boolean = false) {
 
-    val crud = UserCrud()
+    val userRepo = UserRepositoryInMemoty(ttl = 2.toDuration(DurationUnit.HOURS))
+    val crud = UserCrud(userRepo = userRepo)
     val service = KmpUserService(crud = crud)
 
     install(CORS) {
