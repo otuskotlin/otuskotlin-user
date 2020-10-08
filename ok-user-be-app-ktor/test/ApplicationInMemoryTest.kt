@@ -5,10 +5,7 @@ import io.ktor.server.testing.*
 import io.ktor.utils.io.charsets.Charsets
 import kotlinx.serialization.json.Json
 import ru.otus.otuskotlin.user.transport.multiplatform.models.*
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
-import kotlin.test.fail
+import kotlin.test.*
 
 class ApplicationInMemoryTest {
     @Test
@@ -26,12 +23,22 @@ class ApplicationInMemoryTest {
     @Test
     fun getUser() {
         withTestApplication({ module(testing = true) }) {
+            var id = ""
+            handleRequest(HttpMethod.Post, "/api/create") {
+                val body = KmpUserCreate(
+                        fname = "Semen",
+                )
+                val bodyString = Json.encodeToString(KmpUserCreate.serializer(), body)
+                setBody(bodyString)
+                addHeader("Content-Type", "application/json")
+            }.apply {
+                val jsonString = response.content ?: fail("Null response json")
+                val res = Json.decodeFromString(KmpUserResponseItem.serializer(), jsonString)
+                id = res.data?.id ?: fail("No id in response")
+            }
             handleRequest(HttpMethod.Post, "/api/get") {
                 val body = KmpUserGet(
-                        userId = "some-id",
-                        debug = KmpUserGet.Debug(
-                                stub = KmpUserGet.StubCases.SUCCESS
-                        )
+                        userId = id,
                 )
                 val bodyString = Json.encodeToString(KmpUserGet.serializer(), body)
                 setBody(bodyString)
@@ -42,7 +49,8 @@ class ApplicationInMemoryTest {
                         assertEquals(ContentType.Application.Json.withCharset(Charsets.UTF_8), response.contentType())
                         val jsonString = response.content ?: fail("Null response json")
                         val res = Json.decodeFromString(KmpUserResponseItem.serializer(), jsonString)
-                        assertEquals("some-id", res.data?.id)
+                        assertEquals(id, res.data?.id)
+                        assertEquals("Semen", res.data?.fname)
                     }
         }
     }
@@ -50,11 +58,23 @@ class ApplicationInMemoryTest {
     @Test
     fun indexUser() {
         withTestApplication({ module(testing = true) }) {
+            var id = ""
+            handleRequest(HttpMethod.Post, "/api/create") {
+                val body = KmpUserCreate(
+                        fname = "Semen",
+                        dob = "2000-01-02"
+                )
+                val bodyString = Json.encodeToString(KmpUserCreate.serializer(), body)
+                setBody(bodyString)
+                addHeader("Content-Type", "application/json")
+            }.apply {
+                val jsonString = response.content ?: fail("Null response json")
+                val res = Json.decodeFromString(KmpUserResponseItem.serializer(), jsonString)
+                id = res.data?.id ?: fail("No id in response")
+            }
             handleRequest(HttpMethod.Post, "/api/index") {
                 val body = KmpUserIndex(
-                        debug = KmpUserIndex.Debug(
-                                stub = KmpUserIndex.StubCases.SUCCESS
-                        )
+                        filter = KmpUserIndex.Filter(dob = "2000-01-02")
                 )
                 val bodyString = Json.encodeToString(KmpUserIndex.serializer(), body)
                 setBody(bodyString)
@@ -65,8 +85,8 @@ class ApplicationInMemoryTest {
                         assertEquals(ContentType.Application.Json.withCharset(Charsets.UTF_8), response.contentType())
                         val jsonString = response.content ?: fail("Null response json")
                         val res = Json.decodeFromString(KmpUserResponseIndex.serializer(), jsonString)
-                        assertEquals("ivanov-id", res.data?.first()?.id)
-                        assertEquals(2, res.data?.size)
+                        assertEquals(id, res.data?.first()?.id)
+                        assertEquals(1, res.data?.size)
                     }
         }
     }
@@ -77,9 +97,6 @@ class ApplicationInMemoryTest {
             handleRequest(HttpMethod.Post, "/api/create") {
                 val body = KmpUserCreate(
                         fname = "Semen",
-                        debug = KmpUserCreate.Debug(
-                                stub = KmpUserCreate.StubCases.SUCCESS
-                        )
                 )
                 val bodyString = Json.encodeToString(KmpUserCreate.serializer(), body)
                 setBody(bodyString)
@@ -90,7 +107,7 @@ class ApplicationInMemoryTest {
                         assertEquals(ContentType.Application.Json.withCharset(Charsets.UTF_8), response.contentType())
                         val jsonString = response.content ?: fail("Null response json")
                         val res = Json.decodeFromString(KmpUserResponseItem.serializer(), jsonString)
-                        assertEquals("test-create-id", res.data?.id)
+                        assertNotNull(res.data?.id)
                     }
         }
     }
@@ -98,15 +115,25 @@ class ApplicationInMemoryTest {
     @Test
     fun updateUser() {
         withTestApplication({ module(testing = true) }) {
+            var id = ""
+            handleRequest(HttpMethod.Post, "/api/create") {
+                val body = KmpUserCreate(
+                        fname = "Semen",
+                )
+                val bodyString = Json.encodeToString(KmpUserCreate.serializer(), body)
+                setBody(bodyString)
+                addHeader("Content-Type", "application/json")
+            }.apply {
+                val jsonString = response.content ?: fail("Null response json")
+                val res = Json.decodeFromString(KmpUserResponseItem.serializer(), jsonString)
+                id = res.data?.id ?: fail("No id in response")
+            }
             handleRequest(HttpMethod.Post, "/api/update") {
                 val body = KmpUserUpdate(
-                        id = "ivanov-id",
+                        id = id,
                         fname = "Semen",
                         mname = "Semenovich",
                         lname = "Semenov",
-                        debug = KmpUserUpdate.Debug(
-                                stub = KmpUserUpdate.StubCases.SUCCESS
-                        )
                 )
                 val bodyString = Json.encodeToString(KmpUserUpdate.serializer(), body)
                 setBody(bodyString)
@@ -117,7 +144,9 @@ class ApplicationInMemoryTest {
                         assertEquals(ContentType.Application.Json.withCharset(Charsets.UTF_8), response.contentType())
                         val jsonString = response.content ?: fail("Null response json")
                         val res = Json.decodeFromString(KmpUserResponseItem.serializer(), jsonString)
-                        assertEquals("ivanov-id", res.data?.id)
+                        assertEquals(id, res.data?.id)
+                        assertEquals("Semen", res.data?.fname)
+                        assertEquals("Semenov", res.data?.lname)
                     }
         }
     }
@@ -125,12 +154,22 @@ class ApplicationInMemoryTest {
     @Test
     fun deleteUser() {
         withTestApplication({ module(testing = true) }) {
+            var id = ""
+            handleRequest(HttpMethod.Post, "/api/create") {
+                val body = KmpUserCreate(
+                        fname = "Semen",
+                )
+                val bodyString = Json.encodeToString(KmpUserCreate.serializer(), body)
+                setBody(bodyString)
+                addHeader("Content-Type", "application/json")
+            }.apply {
+                val jsonString = response.content ?: fail("Null response json")
+                val res = Json.decodeFromString(KmpUserResponseItem.serializer(), jsonString)
+                id = res.data?.id ?: fail("No id in response")
+            }
             handleRequest(HttpMethod.Post, "/api/delete") {
                 val body = KmpUserDelete(
-                        userId = "delete-id",
-                        debug = KmpUserDelete.Debug(
-                                stub = KmpUserDelete.StubCases.SUCCESS
-                        )
+                        userId = id,
                 )
                 val bodyString = Json.encodeToString(KmpUserDelete.serializer(), body)
                 setBody(bodyString)
@@ -141,7 +180,7 @@ class ApplicationInMemoryTest {
                         assertEquals(ContentType.Application.Json.withCharset(Charsets.UTF_8), response.contentType())
                         val jsonString = response.content ?: fail("Null response json")
                         val res = Json.decodeFromString(KmpUserResponseItem.serializer(), jsonString)
-                        assertEquals("delete-id", res.data?.id)
+                        assertEquals(id, res.data?.id)
                     }
         }
     }

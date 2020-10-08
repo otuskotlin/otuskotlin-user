@@ -54,12 +54,12 @@ class UserDeleteChain(private val userRepo: IUserRepository) {
             handler {
                 isApplicable { status == UserContextStatus.RUNNING }
                 exec {
-                    try {
                         responseUser = userRepo.delete(requestUserId)
-                    } catch (e: Throwable) {
-                        status = UserContextStatus.FAILING
-                        errors.add(GeneralError(code = "repo-delete-error", e = e))
-                    }
+                }
+                onError { e ->
+                    status = UserContextStatus.FAILING
+                    errors.add(GeneralError(code = "repo-delete-error", e = e))
+
                 }
             }
 

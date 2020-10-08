@@ -15,7 +15,7 @@ import kotlin.time.ExperimentalTime
 
 class UserRepositoryInMemoty @OptIn(ExperimentalTime::class) constructor(
         ttl: Duration,
-        initObjects: Collection<UserInMemoryDto> = emptyList()
+        initObjects: Collection<UserModel> = emptyList()
 ) : IUserRepository {
     @OptIn(ExperimentalTime::class)
     private var cache: Cache<String, UserInMemoryDto> = object : Cache2kBuilder<String, UserInMemoryDto>() {}
@@ -24,7 +24,7 @@ class UserRepositoryInMemoty @OptIn(ExperimentalTime::class) constructor(
             .build()
             .also { cache ->
                 initObjects.forEach {
-                    cache.put(it.id, it)
+                    cache.put(it.id, UserInMemoryDto.Companion.of(it))
                 }
             }
 

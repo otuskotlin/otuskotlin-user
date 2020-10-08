@@ -8,6 +8,7 @@ import ru.otus.otuskotlin.user.backend.common.UserContextStatus
 import ru.otus.otuskotlin.user.backend.common.models.UserIndexFilter
 import ru.otus.otuskotlin.user.backend.common.models.UserModel
 import ru.otus.otuskotlin.user.backend.common.repositories.IUserRepository
+import java.time.LocalDate
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.time.DurationUnit
@@ -19,12 +20,12 @@ internal class UserCrudInMemoryTest {
     private val userRepo = UserRepositoryInMemoty(
             ttl = 20.toDuration(DurationUnit.SECONDS),
             listOf(
-                    UserInMemoryDto(id = "get-id", fname = "Ivan"),
-                    UserInMemoryDto(id = "update-id"),
-                    UserInMemoryDto(id = "delete-id", fname = "Ivan"),
-                    UserInMemoryDto(id = "index-id-1", dob = "2020-01-01", fname = "Ivan"),
-                    UserInMemoryDto(id = "index-id-2", dob = "2020-01-01", fname = "Petr"),
-                    UserInMemoryDto(id = "index-id-3", dob = "2020-01-01", fname = "John"),
+                    UserModel(id = "get-id", fname = "Ivan"),
+                    UserModel(id = "update-id"),
+                    UserModel(id = "delete-id", fname = "Ivan"),
+                    UserModel(id = "index-id-1", dob = LocalDate.parse("2020-01-01"), fname = "Ivan"),
+                    UserModel(id = "index-id-2", dob = LocalDate.parse("2020-01-01"), fname = "Petr"),
+                    UserModel(id = "index-id-3", dob = LocalDate.parse("2020-01-01"), fname = "John"),
             )
     )
 

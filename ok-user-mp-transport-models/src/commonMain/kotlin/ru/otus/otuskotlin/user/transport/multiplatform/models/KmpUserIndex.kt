@@ -11,7 +11,8 @@ data class KmpUserIndex(
 ) {
     @Serializable
     data class Filter(
-            var searchString: String? = null
+            var searchString: String? = null,
+            var dob: String? = null
     )
 
     @Serializable

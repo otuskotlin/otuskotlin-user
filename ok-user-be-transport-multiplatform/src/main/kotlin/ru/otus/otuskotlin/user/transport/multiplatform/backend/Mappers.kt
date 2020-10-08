@@ -36,12 +36,17 @@ fun UserContext.setQuery(del: KmpUserDelete) = this.apply {
 }
 
 fun UserContext.setQuery(index: KmpUserIndex) = this.apply {
-//    filter = index.filter ?: UserModel.Filter
+    requestUserFilter = index.filter?.toModel() ?: UserIndexFilter.NONE
     stubIndexCase = when(index.debug?.stub) {
         KmpUserIndex.StubCases.SUCCESS -> UserIndexStubCases.SUCCESS
         else -> UserIndexStubCases.NONE
     }
 }
+
+private fun KmpUserIndex.Filter.toModel(): UserIndexFilter = UserIndexFilter(
+        searchString = searchString ?: "",
+        dob = dob
+)
 
 fun UserContext.resultItem(): KmpUserResponseItem = KmpUserResponseItem(
         data = responseUser.kmp(),
