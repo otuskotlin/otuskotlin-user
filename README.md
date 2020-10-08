@@ -25,6 +25,12 @@
 1. [ok-user-be-app-ktor](ok-user-be-app-ktor/README.md) - "Микросервисное" преложение на KTOR
 1. [ok-user-be-app-kotless](ok-user-be-app-kotless/README.md) - Бессерверное (Serverless) преложение на Kotless
 
+### Модуль бизнес-логики
+1. [ok-user-be-logics](ok-user-be-logics/README.md) - Модуль, содержащий цепочки бизнес-правил обработки запросов
+
+### Работа с БД
+1. [ok-user-be-repo-inmemory](ok-user-be-repo-inmemory/README.md) - Репозитарий для InMemory базы данных, предназначенной для тестирования
+
 #### Сборка
 
 Особенность текущей версии в том, что Kotless 0.1.6 работаент с `kotlinx.serialization 0.20.0`, тогда как 
