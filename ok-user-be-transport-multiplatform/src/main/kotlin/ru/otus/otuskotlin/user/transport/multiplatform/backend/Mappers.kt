@@ -1,26 +1,52 @@
 package ru.otus.otuskotlin.user.transport.multiplatform.backend
 
 import ru.otus.otuskotlin.user.backend.common.UserContext
-import ru.otus.otuskotlin.user.backend.common.models.IUserError
-import ru.otus.otuskotlin.user.backend.common.models.UserModel
+import ru.otus.otuskotlin.user.backend.common.models.*
 import ru.otus.otuskotlin.user.transport.multiplatform.models.*
 import java.time.LocalDate
 
 fun UserContext.setQuery(save: KmpUserSave) = this.apply {
     requestUser = save.model()
+    when (save) {
+        is KmpUserUpdate -> stubUpdateCase = when(save.debug?.stub) {
+            KmpUserUpdate.StubCases.SUCCESS -> UserUpdateStubCases.SUCCESS
+            else -> UserUpdateStubCases.NONE
+        }
+        is KmpUserCreate -> stubCreateCase = when(save.debug?.stub) {
+            KmpUserCreate.StubCases.SUCCESS -> UserCreateStubCases.SUCCESS
+            else -> UserCreateStubCases.NONE
+        }
+    }
 }
 
 fun UserContext.setQuery(get: KmpUserGet) = this.apply {
     requestUserId = get.userId ?: ""
+    stubGetCase = when(get.debug?.stub) {
+        KmpUserGet.StubCases.SUCCESS -> UserGetStubCases.SUCCESS
+        else -> UserGetStubCases.NONE
+    }
 }
 
 fun UserContext.setQuery(del: KmpUserDelete) = this.apply {
     requestUserId = del.userId ?: ""
+    stubDeleteCase = when(del.debug?.stub) {
+        KmpUserDelete.StubCases.SUCCESS -> UserDeleteStubCases.SUCCESS
+        else -> UserDeleteStubCases.NONE
+    }
 }
 
 fun UserContext.setQuery(index: KmpUserIndex) = this.apply {
-//    filter = index.filter ?: UserModel.Filter
+    requestUserFilter = index.filter?.toModel() ?: UserIndexFilter.NONE
+    stubIndexCase = when(index.debug?.stub) {
+        KmpUserIndex.StubCases.SUCCESS -> UserIndexStubCases.SUCCESS
+        else -> UserIndexStubCases.NONE
+    }
 }
+
+private fun KmpUserIndex.Filter.toModel(): UserIndexFilter = UserIndexFilter(
+        searchString = searchString ?: "",
+        dob = dob
+)
 
 fun UserContext.resultItem(): KmpUserResponseItem = KmpUserResponseItem(
         data = responseUser.kmp(),
@@ -29,7 +55,7 @@ fun UserContext.resultItem(): KmpUserResponseItem = KmpUserResponseItem(
 )
 
 fun UserContext.resultIndex(): KmpUserResponseIndex = KmpUserResponseIndex(
-        data = listOf(responseUser.kmp()),
+        data = responseUsers.map { it.kmp() },
         errors = errors.map { it.kmp() },
         status = KmpUserResultStatuses.SUCCESS
 )

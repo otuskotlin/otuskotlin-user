@@ -6,10 +6,23 @@ import kotlinx.serialization.Serializable
 data class KmpUserIndex(
         var limit: Long? = null,
         var offset: Long? = null,
-        var filter: Filter? = null
+        var filter: Filter? = null,
+        var debug: Debug? = null
 ) {
     @Serializable
     data class Filter(
-            var searchString: String? = null
+            var searchString: String? = null,
+            var dob: String? = null
     )
+
+    @Serializable
+    data class Debug(
+            val stub: StubCases? = null
+    )
+
+    @Serializable
+    enum class StubCases {
+        NONE,
+        SUCCESS
+    }
 }

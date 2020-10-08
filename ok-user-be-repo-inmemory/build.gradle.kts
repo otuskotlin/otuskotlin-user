@@ -10,15 +10,17 @@ repositories {
 }
 
 dependencies {
+
     val coroutinesVersion: String by project
+    val cache2kVersion: String by project
 
     implementation(kotlin("stdlib"))
 
-    implementation(project(":ok-user-mp-common"))
     implementation(project(":ok-user-be-common"))
+
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
+    implementation("org.cache2k:cache2k-core:$cache2kVersion")
 
     testImplementation(kotlin("test"))
     testImplementation(kotlin("test-junit"))
-    testImplementation(project(":ok-user-be-repo-inmemory"))
 }

@@ -43,6 +43,8 @@ dependencies {
     implementation(project(":ok-user-be-common"))
     implementation(project(":ok-user-mp-transport-models"))
     implementation(project(":ok-user-be-transport-multiplatform"))
+    implementation(project(":ok-user-be-logics"))
+    implementation(project(":ok-user-be-repo-inmemory"))
 
     implementation(kotlin("stdlib-jdk8"))
     implementation("io.ktor:ktor-server-netty:$ktorVersion")

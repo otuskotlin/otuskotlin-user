@@ -3,14 +3,18 @@ package ru.otus.otuskotlin.user.backend.logics
 import ru.otus.otuskotlin.common.cor.cor
 import ru.otus.otuskotlin.user.backend.common.UserContext
 import ru.otus.otuskotlin.user.backend.common.UserContextStatus
+import ru.otus.otuskotlin.user.backend.common.errors.GeneralError
+import ru.otus.otuskotlin.user.backend.common.models.UserIndexStubCases
 import ru.otus.otuskotlin.user.backend.common.models.UserModel
 import ru.otus.otuskotlin.user.backend.common.models.UserPermissionsModel
+import ru.otus.otuskotlin.user.backend.common.repositories.IUserRepository
+import ru.otus.otuskotlin.user.backend.logics.handlers.responsePrepareHandler
 import java.time.LocalDate
 
-class UserIndexChain {
+class UserIndexChain(private val userRepo: IUserRepository) {
 
     suspend fun exec(context: UserContext) = chain.exec(context.apply {
-
+        userRepo = this@UserIndexChain.userRepo
     })
 
     companion object {
@@ -18,46 +22,66 @@ class UserIndexChain {
             // Инициализация пайплайна
             exec { status = UserContextStatus.RUNNING }
 
+            // Обработка стабов
+            processor {
+                isApplicable { stubIndexCase != UserIndexStubCases.NONE }
+                handler {
+                    isApplicable { stubIndexCase == UserIndexStubCases.SUCCESS }
+                    exec {
+                        responseUsers = mutableListOf(
+                                UserModel(
+                                        id = "ivanov-id",
+                                        fname = "Ivan",
+                                        mname = "Ivanovich",
+                                        lname = "Ivanov",
+                                        dob = LocalDate.parse("2000-01-01"),
+                                        email = "ivan@ivanov.example",
+                                        phone = "+7 999 999 9999",
+                                        permissions = mutableSetOf(
+                                                UserPermissionsModel.SEND_MESSAGE,
+                                                UserPermissionsModel.UPDATE,
+                                                UserPermissionsModel.GET_NEWS,
+                                                UserPermissionsModel.VIEW
+                                        )
+                                ),
+                                UserModel(
+                                        id = "petrov-id",
+                                        fname = "Petr",
+                                        mname = "Petrovich",
+                                        lname = "Petrov",
+                                        dob = LocalDate.parse("2000-01-02"),
+                                        email = "petr@Petrov.example",
+                                        phone = "+7 999 999 9998",
+                                        permissions = mutableSetOf(
+                                                UserPermissionsModel.SEND_MESSAGE,
+                                                UserPermissionsModel.UPDATE,
+                                                UserPermissionsModel.GET_NEWS,
+                                                UserPermissionsModel.VIEW
+                                        )
+                                )
+                        )
+                        status = UserContextStatus.FINISHING
+                    }
+                }
+            }
+
             // Валидация
 
             // Обработка и работа с БД
+            handler {
+                isApplicable { status == UserContextStatus.RUNNING }
+                exec {
+                    try {
+                        responseUsers = userRepo.index(requestUserFilter).toMutableList()
+                    } catch (e: Throwable) {
+                        status = UserContextStatus.FAILING
+                        errors.add(GeneralError(code = "repo-index-error", e = e))
+                    }
+                }
+            }
 
             // Подготовка ответа
-            exec {
-                responseUsers = mutableListOf(
-                        UserModel(
-                                id = "ivanov-id",
-                                fname = "Ivan",
-                                mname = "Ivanovich",
-                                lname = "Ivanov",
-                                dob = LocalDate.parse("2000-01-01"),
-                                email = "ivan@ivanov.example",
-                                phone = "+7 999 999 9999",
-                                permissions = mutableSetOf(
-                                        UserPermissionsModel.SEND_MESSAGE,
-                                        UserPermissionsModel.UPDATE,
-                                        UserPermissionsModel.GET_NEWS,
-                                        UserPermissionsModel.VIEW
-                                )
-                        ),
-                        UserModel(
-                                id = "petrov-id",
-                                fname = "Petr",
-                                mname = "Petrovich",
-                                lname = "Petrov",
-                                dob = LocalDate.parse("2000-01-02"),
-                                email = "petr@Petrov.example",
-                                phone = "+7 999 999 9998",
-                                permissions = mutableSetOf(
-                                        UserPermissionsModel.SEND_MESSAGE,
-                                        UserPermissionsModel.UPDATE,
-                                        UserPermissionsModel.GET_NEWS,
-                                        UserPermissionsModel.VIEW
-                                )
-                        )
-                )
-                status = UserContextStatus.SUCCESS
-            }
+            exec(responsePrepareHandler)
         }
     }
 }

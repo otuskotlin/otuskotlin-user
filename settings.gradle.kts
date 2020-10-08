@@ -50,3 +50,4 @@ if (serializationVersion.startsWith("0.")) {
     include(":ok-user-be-app-ktor")
 }
 include("ok-user-be-logics")
+include("ok-user-be-repo-inmemory")

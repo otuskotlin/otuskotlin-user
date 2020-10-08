@@ -21,6 +21,14 @@ data class KmpUserUpdate(
         phone = phone
 ) {
     @Serializable
-    class Debug {}
+    data class Debug(
+            val stub: StubCases? = null
+    )
+
+    @Serializable
+    enum class StubCases {
+        NONE,
+        SUCCESS
+    }
 }
 
