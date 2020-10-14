@@ -5,6 +5,9 @@ import ru.otus.otuskotlin.user.backend.common.repositories.IUserRepository
 
 data class UserContext(
         var userRepo: IUserRepository = IUserRepository.NONE,
+        var userRepoProd: IUserRepository = IUserRepository.NONE,
+        var userRepoTest: IUserRepository = IUserRepository.NONE,
+        var workMode: WorkModes = WorkModes.DEFAULT,
 
         var requestUserId: String = "",
         var requestUser: UserModel = UserModel.NONE,

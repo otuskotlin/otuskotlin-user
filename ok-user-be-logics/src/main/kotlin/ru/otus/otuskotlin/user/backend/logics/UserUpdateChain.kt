@@ -8,12 +8,18 @@ import ru.otus.otuskotlin.user.backend.common.models.UserUpdateStubCases
 import ru.otus.otuskotlin.user.backend.common.models.UserModel
 import ru.otus.otuskotlin.user.backend.common.models.UserPermissionsModel
 import ru.otus.otuskotlin.user.backend.common.repositories.IUserRepository
+import ru.otus.otuskotlin.user.backend.logics.handlers.querySetWorkMode
 import ru.otus.otuskotlin.user.backend.logics.handlers.responsePrepareHandler
+import ru.otus.otuskotlin.user.backend.logics.handlers.stubUpdate
 
-class UserUpdateChain(private val userRepo: IUserRepository) {
+class UserUpdateChain(
+        private val userRepoProd: IUserRepository,
+        private val userRepoTest: IUserRepository
+) {
 
     suspend fun exec(context: UserContext) = chain.exec(context.apply {
-        userRepo = this@UserUpdateChain.userRepo
+        userRepoProd = this@UserUpdateChain.userRepoProd
+        userRepoTest = this@UserUpdateChain.userRepoTest
     })
 
     companion object {
@@ -21,33 +27,15 @@ class UserUpdateChain(private val userRepo: IUserRepository) {
             // Инициализация пайплайна
             exec { status = UserContextStatus.RUNNING }
 
-            // Обработка стабов
-            processor {
-                isApplicable { stubUpdateCase != UserUpdateStubCases.NONE }
-                handler {
-                    isApplicable { stubUpdateCase == UserUpdateStubCases.SUCCESS }
-                    exec {
-                        responseUser = UserModel(
-                                id = requestUser.id,
-                                fname = requestUser.fname,
-                                mname = requestUser.mname,
-                                lname = requestUser.lname,
-                                dob = requestUser.dob,
-                                email = requestUser.email,
-                                phone = requestUser.phone,
-                                permissions = mutableSetOf(
-                                        UserPermissionsModel.SEND_MESSAGE,
-                                        UserPermissionsModel.UPDATE,
-                                        UserPermissionsModel.GET_NEWS,
-                                        UserPermissionsModel.VIEW
-                                )
-                        )
-                        status = UserContextStatus.FINISHING
-                    }
-                }
-            }
 
             // Валидация
+            // Обработка запроса
+            processor {
+                exec(querySetWorkMode)
+            }
+
+            // Обработка стабов
+            exec(stubUpdate)
 
             // Обработка и работа с БД
             handler {

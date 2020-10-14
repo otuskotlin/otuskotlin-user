@@ -8,12 +8,18 @@ import ru.otus.otuskotlin.user.backend.common.models.UserCreateStubCases
 import ru.otus.otuskotlin.user.backend.common.models.UserModel
 import ru.otus.otuskotlin.user.backend.common.models.UserPermissionsModel
 import ru.otus.otuskotlin.user.backend.common.repositories.IUserRepository
+import ru.otus.otuskotlin.user.backend.logics.handlers.querySetWorkMode
 import ru.otus.otuskotlin.user.backend.logics.handlers.responsePrepareHandler
+import ru.otus.otuskotlin.user.backend.logics.handlers.stubCreate
 
-class UserCreateChain(private val userRepo: IUserRepository) {
+class UserCreateChain(
+        private val userRepoProd: IUserRepository,
+        private val userRepoTest: IUserRepository
+) {
 
-    suspend fun exec(context: UserContext) = chain.exec(context.apply {
-        userRepo = this@UserCreateChain.userRepo
+    suspend fun exec(context: UserContext) = UserCreateChain.chain.exec(context.apply {
+        userRepoProd = this@UserCreateChain.userRepoProd
+        userRepoTest = this@UserCreateChain.userRepoTest
     })
 
     companion object {
@@ -21,33 +27,14 @@ class UserCreateChain(private val userRepo: IUserRepository) {
             // Инициализация пайплайна
             exec { status = UserContextStatus.RUNNING }
 
-            // Обработка стабов
+            // Валидация
+            // Обработка запроса
             processor {
-                isApplicable { stubCreateCase != UserCreateStubCases.NONE }
-                handler {
-                    isApplicable { stubCreateCase == UserCreateStubCases.SUCCESS }
-                    exec {
-                        responseUser = UserModel(
-                                id = "test-create-id",
-                                fname = requestUser.fname,
-                                mname = requestUser.mname,
-                                lname = requestUser.lname,
-                                dob = requestUser.dob,
-                                email = requestUser.email,
-                                phone = requestUser.phone,
-                                permissions = mutableSetOf(
-                                        UserPermissionsModel.SEND_MESSAGE,
-                                        UserPermissionsModel.UPDATE,
-                                        UserPermissionsModel.GET_NEWS,
-                                        UserPermissionsModel.VIEW
-                                )
-                        )
-                        status = UserContextStatus.FINISHING
-                    }
-                }
+                exec(querySetWorkMode)
             }
 
-            // Валидация
+            // Обработка стабов
+            exec(stubCreate)
 
             // Обработка и работа с БД
             handler {

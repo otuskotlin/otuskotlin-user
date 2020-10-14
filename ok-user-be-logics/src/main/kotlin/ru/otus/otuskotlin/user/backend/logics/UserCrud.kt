@@ -3,12 +3,15 @@ package ru.otus.otuskotlin.user.backend.logics
 import ru.otus.otuskotlin.user.backend.common.UserContext
 import ru.otus.otuskotlin.user.backend.common.repositories.IUserRepository
 
-class UserCrud(userRepo: IUserRepository = IUserRepository.NONE) {
-    private val getChain = UserGetChain(userRepo = userRepo)
-    private val indexChain = UserIndexChain(userRepo = userRepo)
-    private val createChain = UserCreateChain(userRepo = userRepo)
-    private val updateChain = UserUpdateChain(userRepo = userRepo)
-    private val deleteChain = UserDeleteChain(userRepo = userRepo)
+class UserCrud(
+        userRepoProd: IUserRepository = IUserRepository.NONE,
+        userRepoTest: IUserRepository = IUserRepository.NONE
+) {
+    private val getChain = UserGetChain(userRepoProd = userRepoProd, userRepoTest = userRepoTest)
+    private val indexChain = UserIndexChain(userRepoProd = userRepoProd, userRepoTest = userRepoTest)
+    private val createChain = UserCreateChain(userRepoProd = userRepoProd, userRepoTest = userRepoTest)
+    private val updateChain = UserUpdateChain(userRepoProd = userRepoProd, userRepoTest = userRepoTest)
+    private val deleteChain = UserDeleteChain(userRepoProd = userRepoProd, userRepoTest = userRepoTest)
 
     suspend fun get(context: UserContext) = getChain.exec(context)
     suspend fun index(context: UserContext) = indexChain.exec(context)

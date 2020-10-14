@@ -8,13 +8,19 @@ import java.time.LocalDate
 fun UserContext.setQuery(save: KmpUserSave) = this.apply {
     requestUser = save.model()
     when (save) {
-        is KmpUserUpdate -> stubUpdateCase = when(save.debug?.stub) {
-            KmpUserUpdate.StubCases.SUCCESS -> UserUpdateStubCases.SUCCESS
-            else -> UserUpdateStubCases.NONE
+        is KmpUserUpdate -> {
+            stubUpdateCase = when (save.debug?.stub) {
+                KmpUserUpdate.StubCases.SUCCESS -> UserUpdateStubCases.SUCCESS
+                else -> UserUpdateStubCases.NONE
+            }
+            workMode = save.debug?.db?.model() ?: WorkModes.DEFAULT
         }
-        is KmpUserCreate -> stubCreateCase = when(save.debug?.stub) {
-            KmpUserCreate.StubCases.SUCCESS -> UserCreateStubCases.SUCCESS
-            else -> UserCreateStubCases.NONE
+        is KmpUserCreate -> {
+            stubCreateCase = when (save.debug?.stub) {
+                KmpUserCreate.StubCases.SUCCESS -> UserCreateStubCases.SUCCESS
+                else -> UserCreateStubCases.NONE
+            }
+            workMode = save.debug?.db?.model() ?: WorkModes.DEFAULT
         }
     }
 }
@@ -25,6 +31,7 @@ fun UserContext.setQuery(get: KmpUserGet) = this.apply {
         KmpUserGet.StubCases.SUCCESS -> UserGetStubCases.SUCCESS
         else -> UserGetStubCases.NONE
     }
+    workMode = get.debug?.db?.model() ?: WorkModes.DEFAULT
 }
 
 fun UserContext.setQuery(del: KmpUserDelete) = this.apply {
@@ -33,6 +40,7 @@ fun UserContext.setQuery(del: KmpUserDelete) = this.apply {
         KmpUserDelete.StubCases.SUCCESS -> UserDeleteStubCases.SUCCESS
         else -> UserDeleteStubCases.NONE
     }
+    workMode = del.debug?.db?.model() ?: WorkModes.DEFAULT
 }
 
 fun UserContext.setQuery(index: KmpUserIndex) = this.apply {
@@ -41,6 +49,13 @@ fun UserContext.setQuery(index: KmpUserIndex) = this.apply {
         KmpUserIndex.StubCases.SUCCESS -> UserIndexStubCases.SUCCESS
         else -> UserIndexStubCases.NONE
     }
+    workMode = index.debug?.db?.model() ?: WorkModes.DEFAULT
+}
+
+private fun KmpUserDbModes?.model(): WorkModes? = when(this) {
+    KmpUserDbModes.PROD -> WorkModes.PROD
+    KmpUserDbModes.TEST -> WorkModes.TEST
+    null -> WorkModes.DEFAULT
 }
 
 private fun KmpUserIndex.Filter.toModel(): UserIndexFilter = UserIndexFilter(

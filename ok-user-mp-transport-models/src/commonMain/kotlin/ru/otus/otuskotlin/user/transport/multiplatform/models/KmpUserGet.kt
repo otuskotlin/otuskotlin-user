@@ -9,7 +9,8 @@ data class KmpUserGet(
 ) {
     @Serializable
     data class Debug(
-            var stub: StubCases? = null
+            val stub: StubCases? = null,
+            val db: KmpUserDbModes? = null,
     ) {
 
     }

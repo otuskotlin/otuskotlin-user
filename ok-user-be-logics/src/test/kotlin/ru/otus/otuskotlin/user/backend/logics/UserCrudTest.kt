@@ -84,7 +84,7 @@ internal class UserCrudTest {
 
     @Test
     fun crudDeleteTest() {
-        val crud = UserCrud(userRepo = IUserRepository.NONE)
+        val crud = UserCrud()
         val context = UserContext(
                 requestUserId = "ivanov-id",
                 stubDeleteCase = UserDeleteStubCases.SUCCESS
