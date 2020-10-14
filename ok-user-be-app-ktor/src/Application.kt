@@ -10,8 +10,10 @@ import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.serialization.*
 import kotlinx.serialization.json.Json
+import ru.otus.otuskotlin.backend.repository.cassandra.UserRepositoryCassandra
 import ru.otus.otuskotlin.backend.repository.inmemory.UserRepositoryInMemoty
 import ru.otus.otuskotlin.user.backend.logics.UserCrud
+import ru.otus.otuskotlin.user.configs.CassandraConfig
 import ru.otus.otuskotlin.user.transport.multiplatform.models.*
 import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
@@ -24,8 +26,19 @@ fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 @kotlin.jvm.JvmOverloads
 fun Application.module(testing: Boolean = false) {
 
-    val userRepo = UserRepositoryInMemoty(ttl = 2.toDuration(DurationUnit.HOURS))
-    val crud = UserCrud(userRepo = userRepo)
+    val cassandraConfig = CassandraConfig(environment)
+    val userRepoTest = UserRepositoryInMemoty(ttl = 2.toDuration(DurationUnit.HOURS))
+    val userRepoProd = UserRepositoryCassandra(
+            keyspace = cassandraConfig.keyspace,
+            hosts = cassandraConfig.hosts,
+            port = cassandraConfig.port,
+            user = cassandraConfig.user,
+            pass = cassandraConfig.pass
+    )
+    val crud = UserCrud(
+            userRepoTest = userRepoTest,
+            userRepoProd = userRepoProd,
+    )
     val service = KmpUserService(crud = crud)
 
     install(CORS) {

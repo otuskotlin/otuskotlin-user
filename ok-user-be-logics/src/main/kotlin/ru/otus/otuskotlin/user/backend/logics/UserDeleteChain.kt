@@ -7,14 +7,21 @@ import ru.otus.otuskotlin.user.backend.common.errors.GeneralError
 import ru.otus.otuskotlin.user.backend.common.models.UserDeleteStubCases
 import ru.otus.otuskotlin.user.backend.common.models.UserModel
 import ru.otus.otuskotlin.user.backend.common.models.UserPermissionsModel
+import ru.otus.otuskotlin.user.backend.common.models.WorkModes
 import ru.otus.otuskotlin.user.backend.common.repositories.IUserRepository
+import ru.otus.otuskotlin.user.backend.logics.handlers.querySetWorkMode
 import ru.otus.otuskotlin.user.backend.logics.handlers.responsePrepareHandler
+import ru.otus.otuskotlin.user.backend.logics.handlers.stubDelete
 import java.time.LocalDate
 
-class UserDeleteChain(private val userRepo: IUserRepository) {
+class UserDeleteChain(
+        private val userRepoProd: IUserRepository,
+        private val userRepoTest: IUserRepository
+) {
 
     suspend fun exec(context: UserContext) = chain.exec(context.apply {
-        userRepo = this@UserDeleteChain.userRepo
+        userRepoProd = this@UserDeleteChain.userRepoProd
+        userRepoTest = this@UserDeleteChain.userRepoTest
     })
 
     companion object {
@@ -22,33 +29,14 @@ class UserDeleteChain(private val userRepo: IUserRepository) {
             // Инициализация пайплайна
             exec { status = UserContextStatus.RUNNING }
 
-            // Обработка стабов
+            // Валидация
+            // Обработка запроса
             processor {
-                isApplicable { stubDeleteCase != UserDeleteStubCases.NONE }
-                handler {
-                    isApplicable { stubDeleteCase == UserDeleteStubCases.SUCCESS }
-                    exec {
-                        responseUser = UserModel(
-                                id = requestUserId,
-                                fname = "Ivan",
-                                mname = "Ivanovich",
-                                lname = "Ivanov",
-                                dob = LocalDate.parse("2000-01-01"),
-                                email = "ivan@ivanov.example",
-                                phone = "+7 999 999 9999",
-                                permissions = mutableSetOf(
-                                        UserPermissionsModel.SEND_MESSAGE,
-                                        UserPermissionsModel.UPDATE,
-                                        UserPermissionsModel.GET_NEWS,
-                                        UserPermissionsModel.VIEW
-                                )
-                        )
-                        status = UserContextStatus.FINISHING
-                    }
-                }
+                exec(querySetWorkMode)
             }
 
-            // Валидация
+            // Обработка стабов
+            exec(stubDelete)
 
             // Обработка и работа с БД
             handler {
@@ -59,7 +47,6 @@ class UserDeleteChain(private val userRepo: IUserRepository) {
                 onError { e ->
                     status = UserContextStatus.FAILING
                     errors.add(GeneralError(code = "repo-delete-error", e = e))
-
                 }
             }
 

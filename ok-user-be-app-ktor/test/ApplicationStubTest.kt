@@ -1,9 +1,13 @@
 package ru.otus.otuskotlin.user
 
+import com.typesafe.config.ConfigFactory
+import io.ktor.config.*
 import io.ktor.http.*
 import io.ktor.server.testing.*
+import io.ktor.util.*
 import io.ktor.utils.io.charsets.Charsets
 import kotlinx.serialization.json.Json
+import org.junit.BeforeClass
 import ru.otus.otuskotlin.user.transport.multiplatform.models.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -13,7 +17,7 @@ import kotlin.test.fail
 class ApplicationStubTest {
     @Test
     fun testRoot() {
-        withTestApplication({ module(testing = true) }) {
+        with(engine) {
             handleRequest(HttpMethod.Get, "/").apply {
                 assertEquals(HttpStatusCode.OK, response.status())
                 assertTrue {
@@ -25,7 +29,7 @@ class ApplicationStubTest {
 
     @Test
     fun getUser() {
-        withTestApplication({ module(testing = true) }) {
+        with(engine) {
             handleRequest(HttpMethod.Post, "/api/get") {
                 val body = KmpUserGet(
                         userId = "some-id",
@@ -49,7 +53,7 @@ class ApplicationStubTest {
 
     @Test
     fun indexUser() {
-        withTestApplication({ module(testing = true) }) {
+        with(engine) {
             handleRequest(HttpMethod.Post, "/api/index") {
                 val body = KmpUserIndex(
                         debug = KmpUserIndex.Debug(
@@ -73,7 +77,7 @@ class ApplicationStubTest {
 
     @Test
     fun createUser() {
-        withTestApplication({ module(testing = true) }) {
+        with(engine) {
             handleRequest(HttpMethod.Post, "/api/create") {
                 val body = KmpUserCreate(
                         fname = "Semen",
@@ -97,7 +101,7 @@ class ApplicationStubTest {
 
     @Test
     fun updateUser() {
-        withTestApplication({ module(testing = true) }) {
+        with(engine) {
             handleRequest(HttpMethod.Post, "/api/update") {
                 val body = KmpUserUpdate(
                         id = "ivanov-id",
@@ -124,7 +128,7 @@ class ApplicationStubTest {
 
     @Test
     fun deleteUser() {
-        withTestApplication({ module(testing = true) }) {
+        with(engine) {
             handleRequest(HttpMethod.Post, "/api/delete") {
                 val body = KmpUserDelete(
                         userId = "delete-id",
@@ -143,6 +147,18 @@ class ApplicationStubTest {
                         val res = Json.decodeFromString(KmpUserResponseItem.serializer(), jsonString)
                         assertEquals("delete-id", res.data?.id)
                     }
+        }
+    }
+
+    companion object {
+        @OptIn(KtorExperimentalAPI::class)
+        private val engine = TestApplicationEngine(createTestEnvironment {
+            config = HoconApplicationConfig(ConfigFactory.load("application.conf"))
+        })
+
+        @BeforeClass
+        @JvmStatic fun setup(){
+            engine.start(wait = false)
         }
     }
 }

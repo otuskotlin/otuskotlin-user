@@ -3,6 +3,7 @@ package ru.otus.otuskotlin.user.backend.logics
 import kotlinx.coroutines.runBlocking
 import ru.otus.otuskotlin.user.backend.common.UserContext
 import ru.otus.otuskotlin.user.backend.common.UserContextStatus
+import ru.otus.otuskotlin.user.backend.common.models.UserGetStubCases
 import ru.otus.otuskotlin.user.backend.common.models.UserModel
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -12,17 +13,15 @@ internal class UserGetTest {
     fun crudGetTest() {
         val crud = UserCrud()
         val context = UserContext(
-                requestUser = UserModel(
-                        fname = "Ivan",
-                        mname = "Ivanovich",
-                        lname = "Ivanov"
-                )
+                requestUserId = "get-id",
+                stubGetCase = UserGetStubCases.SUCCESS
         )
         runBlocking {
-            crud.create(context)
+            crud.get(context)
         }
 
         assertEquals(UserContextStatus.SUCCESS, context.status)
         assertEquals("Ivan", context.responseUser.fname)
+        assertEquals("get-id", context.responseUser.id)
     }
 }

@@ -1,16 +1,20 @@
 package ru.otus.otuskotlin.user
 
+import com.typesafe.config.ConfigFactory
+import io.ktor.config.*
 import io.ktor.http.*
 import io.ktor.server.testing.*
+import io.ktor.util.*
 import io.ktor.utils.io.charsets.Charsets
 import kotlinx.serialization.json.Json
+import org.junit.BeforeClass
 import ru.otus.otuskotlin.user.transport.multiplatform.models.*
 import kotlin.test.*
 
 class ApplicationInMemoryTest {
     @Test
     fun testRoot() {
-        withTestApplication({ module(testing = true) }) {
+        with(engine) {
             handleRequest(HttpMethod.Get, "/").apply {
                 assertEquals(HttpStatusCode.OK, response.status())
                 assertTrue {
@@ -22,11 +26,12 @@ class ApplicationInMemoryTest {
 
     @Test
     fun getUser() {
-        withTestApplication({ module(testing = true) }) {
+        with(engine) {
             var id = ""
             handleRequest(HttpMethod.Post, "/api/create") {
                 val body = KmpUserCreate(
                         fname = "Semen",
+                        debug = KmpUserCreate.Debug(db = KmpUserDbModes.TEST)
                 )
                 val bodyString = Json.encodeToString(KmpUserCreate.serializer(), body)
                 setBody(bodyString)
@@ -39,6 +44,7 @@ class ApplicationInMemoryTest {
             handleRequest(HttpMethod.Post, "/api/get") {
                 val body = KmpUserGet(
                         userId = id,
+                        debug = KmpUserGet.Debug(db = KmpUserDbModes.TEST)
                 )
                 val bodyString = Json.encodeToString(KmpUserGet.serializer(), body)
                 setBody(bodyString)
@@ -57,12 +63,13 @@ class ApplicationInMemoryTest {
 
     @Test
     fun indexUser() {
-        withTestApplication({ module(testing = true) }) {
+        with(engine) {
             var id = ""
             handleRequest(HttpMethod.Post, "/api/create") {
                 val body = KmpUserCreate(
                         fname = "Semen",
-                        dob = "2000-01-02"
+                        dob = "2000-01-02",
+                        debug = KmpUserCreate.Debug(db = KmpUserDbModes.TEST)
                 )
                 val bodyString = Json.encodeToString(KmpUserCreate.serializer(), body)
                 setBody(bodyString)
@@ -74,7 +81,8 @@ class ApplicationInMemoryTest {
             }
             handleRequest(HttpMethod.Post, "/api/index") {
                 val body = KmpUserIndex(
-                        filter = KmpUserIndex.Filter(dob = "2000-01-02")
+                        filter = KmpUserIndex.Filter(dob = "2000-01-02"),
+                        debug = KmpUserIndex.Debug(db = KmpUserDbModes.TEST)
                 )
                 val bodyString = Json.encodeToString(KmpUserIndex.serializer(), body)
                 setBody(bodyString)
@@ -93,10 +101,11 @@ class ApplicationInMemoryTest {
 
     @Test
     fun createUser() {
-        withTestApplication({ module(testing = true) }) {
+        with(engine) {
             handleRequest(HttpMethod.Post, "/api/create") {
                 val body = KmpUserCreate(
                         fname = "Semen",
+                        debug = KmpUserCreate.Debug(db = KmpUserDbModes.TEST)
                 )
                 val bodyString = Json.encodeToString(KmpUserCreate.serializer(), body)
                 setBody(bodyString)
@@ -114,11 +123,12 @@ class ApplicationInMemoryTest {
 
     @Test
     fun updateUser() {
-        withTestApplication({ module(testing = true) }) {
+        with(engine) {
             var id = ""
             handleRequest(HttpMethod.Post, "/api/create") {
                 val body = KmpUserCreate(
                         fname = "Semen",
+                        debug = KmpUserCreate.Debug(db = KmpUserDbModes.TEST)
                 )
                 val bodyString = Json.encodeToString(KmpUserCreate.serializer(), body)
                 setBody(bodyString)
@@ -134,6 +144,7 @@ class ApplicationInMemoryTest {
                         fname = "Semen",
                         mname = "Semenovich",
                         lname = "Semenov",
+                        debug = KmpUserUpdate.Debug(db = KmpUserDbModes.TEST)
                 )
                 val bodyString = Json.encodeToString(KmpUserUpdate.serializer(), body)
                 setBody(bodyString)
@@ -153,11 +164,12 @@ class ApplicationInMemoryTest {
 
     @Test
     fun deleteUser() {
-        withTestApplication({ module(testing = true) }) {
+        with(engine) {
             var id = ""
             handleRequest(HttpMethod.Post, "/api/create") {
                 val body = KmpUserCreate(
                         fname = "Semen",
+                        debug = KmpUserCreate.Debug(db = KmpUserDbModes.TEST)
                 )
                 val bodyString = Json.encodeToString(KmpUserCreate.serializer(), body)
                 setBody(bodyString)
@@ -170,6 +182,7 @@ class ApplicationInMemoryTest {
             handleRequest(HttpMethod.Post, "/api/delete") {
                 val body = KmpUserDelete(
                         userId = id,
+                        debug = KmpUserDelete.Debug(db = KmpUserDbModes.TEST)
                 )
                 val bodyString = Json.encodeToString(KmpUserDelete.serializer(), body)
                 setBody(bodyString)
@@ -182,6 +195,18 @@ class ApplicationInMemoryTest {
                         val res = Json.decodeFromString(KmpUserResponseItem.serializer(), jsonString)
                         assertEquals(id, res.data?.id)
                     }
+        }
+    }
+
+    companion object {
+        @OptIn(KtorExperimentalAPI::class)
+        private val engine = TestApplicationEngine(createTestEnvironment {
+            config = HoconApplicationConfig(ConfigFactory.load("application.conf"))
+        })
+
+        @BeforeClass
+        @JvmStatic fun setup(){
+            engine.start(wait = false)
         }
     }
 }

@@ -8,13 +8,19 @@ import ru.otus.otuskotlin.user.backend.common.models.UserIndexStubCases
 import ru.otus.otuskotlin.user.backend.common.models.UserModel
 import ru.otus.otuskotlin.user.backend.common.models.UserPermissionsModel
 import ru.otus.otuskotlin.user.backend.common.repositories.IUserRepository
+import ru.otus.otuskotlin.user.backend.logics.handlers.querySetWorkMode
 import ru.otus.otuskotlin.user.backend.logics.handlers.responsePrepareHandler
+import ru.otus.otuskotlin.user.backend.logics.handlers.stubIndex
 import java.time.LocalDate
 
-class UserIndexChain(private val userRepo: IUserRepository) {
+class UserIndexChain(
+        private val userRepoProd: IUserRepository,
+        private val userRepoTest: IUserRepository
+) {
 
-    suspend fun exec(context: UserContext) = chain.exec(context.apply {
-        userRepo = this@UserIndexChain.userRepo
+    suspend fun exec(context: UserContext) = UserIndexChain.chain.exec(context.apply {
+        userRepoProd = this@UserIndexChain.userRepoProd
+        userRepoTest = this@UserIndexChain.userRepoTest
     })
 
     companion object {
@@ -22,50 +28,14 @@ class UserIndexChain(private val userRepo: IUserRepository) {
             // Инициализация пайплайна
             exec { status = UserContextStatus.RUNNING }
 
-            // Обработка стабов
+            // Валидация
+            // Обработка запроса
             processor {
-                isApplicable { stubIndexCase != UserIndexStubCases.NONE }
-                handler {
-                    isApplicable { stubIndexCase == UserIndexStubCases.SUCCESS }
-                    exec {
-                        responseUsers = mutableListOf(
-                                UserModel(
-                                        id = "ivanov-id",
-                                        fname = "Ivan",
-                                        mname = "Ivanovich",
-                                        lname = "Ivanov",
-                                        dob = LocalDate.parse("2000-01-01"),
-                                        email = "ivan@ivanov.example",
-                                        phone = "+7 999 999 9999",
-                                        permissions = mutableSetOf(
-                                                UserPermissionsModel.SEND_MESSAGE,
-                                                UserPermissionsModel.UPDATE,
-                                                UserPermissionsModel.GET_NEWS,
-                                                UserPermissionsModel.VIEW
-                                        )
-                                ),
-                                UserModel(
-                                        id = "petrov-id",
-                                        fname = "Petr",
-                                        mname = "Petrovich",
-                                        lname = "Petrov",
-                                        dob = LocalDate.parse("2000-01-02"),
-                                        email = "petr@Petrov.example",
-                                        phone = "+7 999 999 9998",
-                                        permissions = mutableSetOf(
-                                                UserPermissionsModel.SEND_MESSAGE,
-                                                UserPermissionsModel.UPDATE,
-                                                UserPermissionsModel.GET_NEWS,
-                                                UserPermissionsModel.VIEW
-                                        )
-                                )
-                        )
-                        status = UserContextStatus.FINISHING
-                    }
-                }
+                exec(querySetWorkMode)
             }
 
-            // Валидация
+            // Обработка стабов
+            exec(stubIndex)
 
             // Обработка и работа с БД
             handler {

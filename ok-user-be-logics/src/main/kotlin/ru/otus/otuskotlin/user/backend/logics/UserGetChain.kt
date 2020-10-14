@@ -8,13 +8,19 @@ import ru.otus.otuskotlin.user.backend.common.models.UserGetStubCases
 import ru.otus.otuskotlin.user.backend.common.models.UserModel
 import ru.otus.otuskotlin.user.backend.common.models.UserPermissionsModel
 import ru.otus.otuskotlin.user.backend.common.repositories.IUserRepository
+import ru.otus.otuskotlin.user.backend.logics.handlers.querySetWorkMode
 import ru.otus.otuskotlin.user.backend.logics.handlers.responsePrepareHandler
+import ru.otus.otuskotlin.user.backend.logics.handlers.stubsGet
 import java.time.LocalDate
 
-class UserGetChain(private val userRepo: IUserRepository) {
+class UserGetChain(
+        private val userRepoProd: IUserRepository,
+        private val userRepoTest: IUserRepository
+) {
 
-    suspend fun exec(context: UserContext) = chain.exec(context.apply {
-        userRepo = this@UserGetChain.userRepo
+    suspend fun exec(context: UserContext) = UserGetChain.chain.exec(context.apply {
+        userRepoProd = this@UserGetChain.userRepoProd
+        userRepoTest = this@UserGetChain.userRepoTest
     })
 
     companion object {
@@ -22,33 +28,13 @@ class UserGetChain(private val userRepo: IUserRepository) {
             // Инициализация пайплайна
             exec { status = UserContextStatus.RUNNING }
 
-            // Обработка стабов
+            // Валидация
+            // Обработка запроса
             processor {
-                isApplicable { stubGetCase != UserGetStubCases.NONE }
-                handler {
-                    isApplicable { stubGetCase == UserGetStubCases.SUCCESS }
-                    exec {
-                        responseUser = UserModel(
-                                id = requestUserId,
-                                fname = "Ivan",
-                                mname = "Ivanovich",
-                                lname = "Ivanov",
-                                dob = LocalDate.parse("2000-01-01"),
-                                email = "ivan@ivanov.example",
-                                phone = "+7 999 999 9999",
-                                permissions = mutableSetOf(
-                                        UserPermissionsModel.SEND_MESSAGE,
-                                        UserPermissionsModel.UPDATE,
-                                        UserPermissionsModel.GET_NEWS,
-                                        UserPermissionsModel.VIEW
-                                )
-                        )
-                        status = UserContextStatus.FINISHING
-                    }
-                }
+                exec(querySetWorkMode)
             }
 
-            // Валидация
+            exec(stubsGet) // Обработка стабов
 
             // Обработка и работа с БД
             handler {

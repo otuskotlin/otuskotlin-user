@@ -1,3 +1,3 @@
-package ru.otus.otuskotlin.backend.repository.inmemory.exceptions
+package ru.otus.otuskotlin.user.backend.common.exceptions
 
 class UserRepoWrongId(id: String) : Throwable("Wrong ID in operation: $id")
