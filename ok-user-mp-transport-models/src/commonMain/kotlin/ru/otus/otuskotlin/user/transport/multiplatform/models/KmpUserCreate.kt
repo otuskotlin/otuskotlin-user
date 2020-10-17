@@ -22,7 +22,7 @@ data class KmpUserCreate(
     @Serializable
     data class Debug(
             val stub: StubCases? = null,
-            val db: KmpUserDbModes? = null,
+            val db: KmpUserDbModes? = null
     )
 
     @Serializable

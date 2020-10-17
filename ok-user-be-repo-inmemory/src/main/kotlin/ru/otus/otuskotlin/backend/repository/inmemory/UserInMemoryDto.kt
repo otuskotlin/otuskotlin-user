@@ -21,7 +21,7 @@ data class UserInMemoryDto(
             lname = lname ?: "",
             dob = dob?.let { LocalDate.parse(it) } ?: LocalDate.MIN,
             email = email ?: "",
-            phone = phone ?: "",
+            phone = phone ?: ""
     )
 
     companion object {
@@ -35,7 +35,7 @@ data class UserInMemoryDto(
                 lname = user.lname.takeIf { it.isNotBlank() },
                 phone = user.phone.takeIf { it.isNotBlank() },
                 email = user.email.takeIf { it.isNotBlank() },
-                dob = user.dob.takeIf { it != LocalDate.MIN }?.toString(),
+                dob = user.dob.takeIf { it != LocalDate.MIN }?.toString()
         )
     }
 

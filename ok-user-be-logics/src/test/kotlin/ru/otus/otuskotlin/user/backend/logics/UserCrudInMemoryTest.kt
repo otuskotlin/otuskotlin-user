@@ -19,13 +19,13 @@ internal class UserCrudInMemoryTest {
     @OptIn(ExperimentalTime::class)
     private val userRepo = UserRepositoryInMemoty(
             ttl = 20.toDuration(DurationUnit.SECONDS),
-            listOf(
+            initObjects = listOf(
                     UserModel(id = "get-id", fname = "Ivan"),
                     UserModel(id = "update-id"),
                     UserModel(id = "delete-id", fname = "Ivan"),
                     UserModel(id = "index-id-1", dob = LocalDate.parse("2020-01-01"), fname = "Ivan"),
                     UserModel(id = "index-id-2", dob = LocalDate.parse("2020-01-01"), fname = "Petr"),
-                    UserModel(id = "index-id-3", dob = LocalDate.parse("2020-01-01"), fname = "John"),
+                    UserModel(id = "index-id-3", dob = LocalDate.parse("2020-01-01"), fname = "John")
             )
     )
 

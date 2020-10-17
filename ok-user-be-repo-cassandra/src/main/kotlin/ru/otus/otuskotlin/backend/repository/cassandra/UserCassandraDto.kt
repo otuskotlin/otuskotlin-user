@@ -32,7 +32,7 @@ data class UserCassandraDto(
         val email: String? = null,
 
         @Column(name = COLUMN_BIRTH_DATE, codec = LocalDateCodec::class)
-        val dob: LocalDate? = null,
+        val dob: LocalDate? = null
 ) {
     fun toModel(): UserModel = UserModel(
             id = id ?: "",
@@ -41,7 +41,7 @@ data class UserCassandraDto(
             lname = lname ?: "",
             dob = dob ?: LocalDate.MIN,
             email = email ?: "",
-            phone = phone ?: "",
+            phone = phone ?: ""
     )
 
     companion object {
@@ -65,7 +65,7 @@ data class UserCassandraDto(
                 lname = user.lname.takeIf { it.isNotBlank() },
                 phone = user.phone.takeIf { it.isNotBlank() },
                 email = user.email.takeIf { it.isNotBlank() },
-                dob = user.dob.takeIf { it != LocalDate.MIN },
+                dob = user.dob.takeIf { it != LocalDate.MIN }
         )
     }
 

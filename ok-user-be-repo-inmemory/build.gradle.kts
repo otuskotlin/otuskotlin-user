@@ -14,7 +14,7 @@ dependencies {
     val coroutinesVersion: String by project
     val cache2kVersion: String by project
 
-    implementation(kotlin("stdlib"))
+    implementation(kotlin("stdlib-jdk8"))
 
     implementation(project(":ok-user-be-common"))
 
