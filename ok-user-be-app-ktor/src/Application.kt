@@ -37,7 +37,7 @@ fun Application.module(testing: Boolean = false) {
     )
     val crud = UserCrud(
             userRepoTest = userRepoTest,
-            userRepoProd = userRepoProd,
+            userRepoProd = userRepoProd
     )
     val service = KmpUserService(crud = crud)
 

@@ -16,7 +16,7 @@ dependencies {
     val coroutinesVersion: String by project
     val serializationVersion: String by project
 
-    implementation(kotlin("stdlib"))
+    implementation(kotlin("stdlib-jdk8"))
 
     implementation(project(":ok-user-mp-transport-models"))
     implementation(project(":ok-user-be-common"))

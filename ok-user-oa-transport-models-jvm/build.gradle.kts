@@ -11,7 +11,7 @@ group = rootProject.group
 version = rootProject.version
 
 dependencies {
-    implementation(kotlin("stdlib"))
+    implementation(kotlin("stdlib-jdk8"))
 }
 
 val spec = "$rootDir/ok-user-openapi-spec-v1.yaml"

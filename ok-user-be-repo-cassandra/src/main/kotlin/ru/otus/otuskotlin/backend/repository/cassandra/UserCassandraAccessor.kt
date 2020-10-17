@@ -14,7 +14,7 @@ import java.time.LocalDate
 interface UserCassandraAccessor {
     @Query(QUERY_FIND_BY_DOB)
     fun findByDob(
-            @Param("dob", codec = LocalDateCodec::class) dob: LocalDate,
+            @Param("dob", codec = LocalDateCodec::class) dob: LocalDate
     ): ListenableFuture<Result<UserCassandraDto>>
 
     companion object {

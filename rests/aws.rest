@@ -1,0 +1,45 @@
+POST https://user.crowdproj.com/api/get
+Content-Type: application/json
+
+{
+  "userId": "22ccb9be-de72-450c-97ae-772a3e8b2fa7"
+}
+
+###
+POST https://user.crowdproj.com/api/index
+Content-Type: application/json
+
+{
+  "filter": {
+    "dob": "2000-01-01"
+  }
+}
+
+###
+POST https://user.crowdproj.com/api/create
+Content-Type: application/json
+
+{
+  "fname": "First",
+  "mname": "Middle",
+  "lname": "Last",
+  "dob": "2000-01-01",
+  "email": "email@email.email",
+  "phone": "+7 999 999 9999"
+}
+
+###
+POST https://user.crowdproj.com/api/update
+Content-Type: application/json
+
+{
+  "id": "22ccb9be-de72-450c-97ae-772a3e8b2fa7",
+  "fname": "Ivan",
+  "mname": "Ivanovich",
+  "lname": "Ivanov",
+  "dob": "2000-01-01",
+  "email": "email@email.email",
+  "phone": "+7 999 999 9999"
+}
+
+###

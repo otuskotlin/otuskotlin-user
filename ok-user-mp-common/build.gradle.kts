@@ -22,7 +22,7 @@ kotlin {
         val coroutinesVersion: String by project
         val commonMain by getting {
             dependencies {
-                implementation(kotlin("stdlib"))
+                implementation(kotlin("stdlib-jdk8"))
                 implementation(kotlin("stdlib-common"))
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-common:$coroutinesVersion")
 //                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")

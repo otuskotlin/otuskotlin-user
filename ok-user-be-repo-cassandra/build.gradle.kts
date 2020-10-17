@@ -16,7 +16,7 @@ dependencies {
     val testContainersVersion: String by project
     val cassandraVersion: String by project
 
-    implementation(kotlin("stdlib"))
+    implementation(kotlin("stdlib-jdk8"))
 
     implementation(project(":ok-user-be-common"))
 

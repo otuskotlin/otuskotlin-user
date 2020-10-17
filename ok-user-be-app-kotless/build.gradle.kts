@@ -39,9 +39,10 @@ kotless {
 
         terraform {
             allowDestroy = true
-//            files {
-//                add(file("src/main/tf/extensions.tf"))
-//            }
+            files {
+                add(file("src/main/tf/dynamodb.tf"))
+                add(file("src/main/tf/dynamodb-access.tf"))
+            }
         }
     }
 
@@ -52,8 +53,22 @@ dependencies {
     val coroutinesVersion: String by project
 
     implementation(project(":ok-user-be-transport-multiplatform"))
+    implementation(project(":ok-user-be-logics"))
+    implementation(project(":ok-user-be-repo-inmemory"))
+    implementation(project(":ok-user-be-repo-dynamodb"))
 
-    implementation(kotlin("stdlib"))
+    implementation(kotlin("stdlib-jdk8"))
     implementation("io.kotless", "kotless-lang", kotlessVersion)
     api("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
+}
+
+tasks {
+    withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class.java) {
+        targetCompatibility = "1.8"
+        kotlinOptions {
+            jvmTarget = "1.8"
+            apiVersion = "1.3"
+            languageVersion = "1.3"
+        }
+    }
 }

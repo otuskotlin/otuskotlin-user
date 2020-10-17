@@ -16,7 +16,7 @@ data class CassandraConfig(
             port = environment.config.property("$PATH.port").getString().toInt(),
             user = environment.config.property("$PATH.user").getString(),
             pass = environment.config.property("$PATH.pass").getString(),
-            keyspace = environment.config.property("$PATH.keyspace").getString(),
+            keyspace = environment.config.property("$PATH.keyspace").getString()
     )
 
     companion object {

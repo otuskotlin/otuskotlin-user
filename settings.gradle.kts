@@ -52,3 +52,4 @@ if (serializationVersion.startsWith("0.")) {
 include("ok-user-be-logics")
 include("ok-user-be-repo-inmemory")
 include("ok-user-be-repo-cassandra")
+include("ok-user-be-repo-dynamodb")

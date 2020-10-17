@@ -6,10 +6,23 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.*
 import kotlinx.serialization.json.Json
 import org.slf4j.LoggerFactory
-import ru.otus.otuskotlin.user.transport.multiplatform.backend.KmpUserService
+import ru.otus.otuskotlin.backend.repository.dynamodb.UserRepositoryDynamo
+import ru.otus.otuskotlin.backend.repository.inmemory.UserRepositoryInMemoty
+import ru.otus.otuskotlin.user.backend.logics.UserCrud
 import ru.otus.otuskotlin.user.transport.multiplatform.models.*
+import kotlin.time.DurationUnit
+import kotlin.time.ExperimentalTime
+import kotlin.time.toDuration
 
-private val service = KmpUserService()
+
+@OptIn(ExperimentalTime::class)
+private val userRepoTest = UserRepositoryInMemoty(ttl = 2.toDuration(DurationUnit.HOURS))
+private val userRepoProd = UserRepositoryDynamo()
+private val crud = UserCrud(
+        userRepoTest = userRepoTest,
+        userRepoProd = userRepoProd
+)
+val service = KmpUserService(crud = crud)
 private val log = LoggerFactory.getLogger("UserController")
 
 @UnstableDefault
