@@ -30,6 +30,13 @@
 
 ### Работа с БД
 1. [ok-user-be-repo-inmemory](ok-user-be-repo-inmemory/README.md) - Репозитарий для InMemory базы данных, предназначенной для тестирования
+1. [ok-user-be-repo-cassandra](ok-user-be-repo-cassandra/README.md) - Репозитарий для базы данных Cassandra, предназначенной для работы в составе Ktor
+1. [ok-user-be-repo-dynamodb](ok-user-be-repo-dynamodb/README.md) - Репозитарий для базы данных DynamoDB, предназначенной для работы в составе Kotless
+
+### Другое
+1. [rests](rests) - набор REST-скриптов для тестирования сервиса
+1. [elk-stack](elk-stack/README.md) - набор скриптов для подъема инфраструктуры логирования, мониторинга и анализа логов
+на базе ELK-Stack
 
 #### Сборка
 
