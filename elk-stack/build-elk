@@ -1,0 +1,8 @@
+#!/bin/bash
+
+VERS=7.9.0
+
+for i in elasticsearch kibana logstash
+do
+    docker build -t $i:$VERS $i
+done
