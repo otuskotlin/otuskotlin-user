@@ -9,21 +9,11 @@ import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.serialization.*
-import io.ktor.util.pipeline.*
 import kotlinx.serialization.json.Json
-import net.logstash.logback.argument.StructuredArguments.keyValue
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import ru.otus.otuskotlin.backend.repository.cassandra.UserRepositoryCassandra
 import ru.otus.otuskotlin.backend.repository.inmemory.UserRepositoryInMemoty
-import ru.otus.otuskotlin.user.backend.common.UserContext
-import ru.otus.otuskotlin.user.backend.common.UserContextStatus
-import ru.otus.otuskotlin.user.backend.common.errors.QueryParseError
-import ru.otus.otuskotlin.user.backend.common.logger.doLoggingSusp
 import ru.otus.otuskotlin.user.backend.logics.UserCrud
 import ru.otus.otuskotlin.user.configs.CassandraConfig
-import ru.otus.otuskotlin.user.transport.multiplatform.backend.resultIndex
-import ru.otus.otuskotlin.user.transport.multiplatform.backend.resultItem
 import ru.otus.otuskotlin.user.transport.multiplatform.models.*
 import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
@@ -50,7 +40,6 @@ fun Application.module(testing: Boolean = false) {
             userRepoProd = userRepoProd
     )
     val service = KmpUserService(crud = crud)
-    val logger = LoggerFactory.getLogger(::main::class.java)
 
     install(CORS) {
         method(HttpMethod.Options)
@@ -79,59 +68,26 @@ fun Application.module(testing: Boolean = false) {
 
         route("/api") {
             post("/get") {
-                request<KmpUserGet, KmpUserResponseItem>("user-get", logger) {
-                    service.get(it)
-                }
+                val query = call.receive<KmpUserGet>()
+                call.respond(service.get(query))
             }
             post("/index") {
-                request<KmpUserIndex, KmpUserResponseIndex>("user-index", logger) {
-                    service.index(it)
-                }
+                val query = call.receive<KmpUserIndex>()
+                call.respond(service.index(query))
             }
             post("/create") {
-                request<KmpUserCreate, KmpUserResponseItem>("user-create", logger) {
-                    service.create(it)
-                }
+                val query = call.receive<KmpUserCreate>()
+                call.respond(service.create(query))
             }
             post("/update") {
-                request<KmpUserUpdate, KmpUserResponseItem>("user-update", logger) {
-                    service.update(it)
-                }
+                val query = call.receive<KmpUserUpdate>()
+                call.respond(service.update(query))
             }
             post("/delete") {
-                request<KmpUserDelete, KmpUserResponseItem>("user-delete", logger) {
-                    service.delete(it)
-                }
+                val query = call.receive<KmpUserDelete>()
+                call.respond(service.delete(query))
             }
         }
     }
 }
 
-suspend inline fun <reified T: Any, reified K: KmpUserResponse> PipelineContext<Unit, ApplicationCall>.request(
-        logId: String,
-        logger: Logger,
-        crossinline block: suspend (T) -> K
-) {
-    try {
-        logger.doLoggingSusp(logId) {
-            val query = call.receive<T>()
-            logger.info("Query for $logId", keyValue("data", query))
-            val response = block(query)
-            call.respond(response)
-            logger.info("Response for $logId", keyValue("data", response))
-        }
-
-    } catch (e: Throwable) {
-        logger.doLoggingSusp("$logId-error") {
-            val ctx = UserContext(
-                    errors = mutableListOf(QueryParseError(code = "$logId-parse-error", e = e)),
-                    status = UserContextStatus.ERROR
-            )
-            val res = when (K::class) {
-                KmpUserResponseIndex::class -> ctx.resultIndex()
-                else -> ctx.resultItem()
-            }
-            call.respond(res)
-        }
-    }
-}

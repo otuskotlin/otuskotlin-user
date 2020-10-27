@@ -1,55 +1,12 @@
 <configuration>
-
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%d{YYYY-MM-dd HH:mm:ss.SSS} [%thread] %-5level[%marker] %logger{36} - %msg%n%mdc%n</pattern>
+            <pattern>%d{YYYY-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
-
-    <appender name="kafkaAppender" class="com.github.danielwegener.logback.kafka.KafkaAppender">
-        <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
-        </encoder>
-        <keyingStrategy class="com.github.danielwegener.logback.kafka.keying.NoKeyKeyingStrategy" />
-        <deliveryStrategy class="com.github.danielwegener.logback.kafka.delivery.AsynchronousDeliveryStrategy" />
-        <topic>logs-users</topic>
-        <producerConfig>bootstrap.servers=localhost:9094</producerConfig>
-        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
-            <providers>
-                <timestamp/>
-                <version/>
-                <pattern>
-                    <pattern>
-                        {
-                        "component": "${SERVICE_NAME}",
-                        "container-id": "${HOSTNAME}"
-                        }
-                    </pattern>
-                </pattern>
-                <message/>
-                <loggerName/>
-                <threadName/>
-                <logLevel/>
-                <logstashMarkers/>
-                <callerData/>
-                <stackTrace/>
-                <context/>
-                <mdc/>
-                <logstashMarkers/>
-                <arguments/>
-                <tags/>
-            </providers>
-        </encoder>
-
-        <appender-ref ref="STDOUT" />
-    </appender>
-
-    <appender name="asyncKafkaAppender" class="ch.qos.logback.classic.AsyncAppender">
-        <appender-ref ref="kafkaAppender" />
-    </appender>
-
-    <root level="info">
-        <appender-ref ref="STDOUT" />
-        <appender-ref ref="asyncKafkaAppender" />
+    <root level="trace">
+        <appender-ref ref="STDOUT"/>
     </root>
+    <logger name="org.eclipse.jetty" level="INFO"/>
+    <logger name="io.netty" level="INFO"/>
 </configuration>
