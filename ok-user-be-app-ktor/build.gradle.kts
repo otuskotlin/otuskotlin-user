@@ -1,5 +1,7 @@
 val ktorVersion: String by project
 val logbackVersion: String by project
+val logbackEncoderVersion: String by project
+val logbackKafkaVersion: String by project
 
 plugins {
     application
@@ -40,6 +42,7 @@ docker {
 
 
 dependencies {
+    implementation(project(":ok-user-mp-common"))
     implementation(project(":ok-user-be-common"))
     implementation(project(":ok-user-mp-transport-models"))
     implementation(project(":ok-user-be-transport-multiplatform"))
@@ -49,7 +52,11 @@ dependencies {
 
     implementation(kotlin("stdlib-jdk8"))
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
+    implementation("net.logstash.logback:logstash-logback-encoder:$logbackEncoderVersion")
+    implementation("com.github.danielwegener:logback-kafka-appender:$logbackKafkaVersion")
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
+    implementation("org.apache.kafka:kafka-clients:2.5.1")
+
     implementation("io.ktor:ktor-server-core:$ktorVersion")
     implementation("io.ktor:ktor-server-host-common:$ktorVersion")
     implementation("io.ktor:ktor-serialization:$ktorVersion")
