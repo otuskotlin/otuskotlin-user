@@ -8,6 +8,7 @@ data class UserContext(
         var userRepoProd: IUserRepository = IUserRepository.NONE,
         var userRepoTest: IUserRepository = IUserRepository.NONE,
         var workMode: WorkModes = WorkModes.DEFAULT,
+        var requestId: String = "",
 
         var requestUserId: String = "",
         var requestUser: UserModel = UserModel.NONE,

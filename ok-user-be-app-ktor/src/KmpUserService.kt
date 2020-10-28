@@ -19,7 +19,7 @@ class KmpUserService(val crud: UserCrud) {
 
     private val log = LoggerFactory.getLogger(this::class.java)!!
 
-    suspend fun get(query: KmpUserGet): KmpUserResponseItem = UserContext().run {
+    suspend fun get(query: KmpUserGet, requestId: String): KmpUserResponseItem = UserContext(requestUserId = requestId).run {
         try {
             crud.get(setQuery(query))
         } catch (e: Throwable) {
@@ -29,7 +29,7 @@ class KmpUserService(val crud: UserCrud) {
         resultItem()
     }
 
-    suspend fun index(query: KmpUserIndex): KmpUserResponseIndex = UserContext().run {
+    suspend fun index(query: KmpUserIndex, requestId: String): KmpUserResponseIndex = UserContext(requestUserId = requestId).run {
         try {
             crud.index(setQuery(query))
         } catch (e: Throwable) {
@@ -39,7 +39,7 @@ class KmpUserService(val crud: UserCrud) {
         resultIndex()
     }
 
-    suspend fun create(query: KmpUserCreate): KmpUserResponseItem = UserContext().run {
+    suspend fun create(query: KmpUserCreate, requestId: String): KmpUserResponseItem = UserContext(requestUserId = requestId).run {
         try {
             crud.create(setQuery(query))
         } catch (e: Throwable) {
@@ -49,7 +49,7 @@ class KmpUserService(val crud: UserCrud) {
         resultItem()
     }
 
-    suspend fun update(query: KmpUserUpdate): KmpUserResponseItem = UserContext().run {
+    suspend fun update(query: KmpUserUpdate, requestId: String): KmpUserResponseItem = UserContext(requestUserId = requestId).run {
         try {
             crud.update(setQuery(query))
         } catch (e: Throwable) {
@@ -59,7 +59,7 @@ class KmpUserService(val crud: UserCrud) {
         resultItem()
     }
 
-    suspend fun delete(query: KmpUserDelete): KmpUserResponseItem = UserContext().run {
+    suspend fun delete(query: KmpUserDelete, requestId: String): KmpUserResponseItem = UserContext(requestUserId = requestId).run {
         try {
             crud.delete(setQuery(query))
         } catch (e: Throwable) {

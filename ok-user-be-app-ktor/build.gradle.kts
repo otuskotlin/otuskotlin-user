@@ -42,6 +42,7 @@ docker {
 
 
 dependencies {
+    implementation(project(":ok-user-mp-common"))
     implementation(project(":ok-user-be-common"))
     implementation(project(":ok-user-mp-transport-models"))
     implementation(project(":ok-user-be-transport-multiplatform"))
